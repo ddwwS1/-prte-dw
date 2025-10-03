@@ -3,6 +3,10 @@ margin: 0;
 padding: 0;
 }
 
+"workbench.colorCustomizations": {
+"statusBar background": rgb(242,242,242);
+}
+
 body{
 width: 100%;
 height: 100%;
