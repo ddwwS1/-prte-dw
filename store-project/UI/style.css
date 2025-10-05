@@ -3,10 +3,9 @@ margin: 0;
 padding: 0;
 }
 
-"workbench.colorCustomizations": {
-"statusBar background": rgb(242,242,242);
-"statusBar noFolderBackground" : rgb(0,0,0);
-"statusBar debuggingBackground": rgb(0,0,0);
+
+input{
+accent-color: rgb(64,64,64);
 }
 
 body{
