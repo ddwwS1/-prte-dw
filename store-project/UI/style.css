@@ -25,7 +25,7 @@ background-color: rgb(242,242,242);
 }
 
 #menu_bar{
-width: 100%;
+width: 99%;
 height: 50px;
 padding: 10px;
 background-color: rgb(64,64,64);
@@ -47,7 +47,7 @@ height: 45px
 }
 
 #main_title{
-width: 95%;
+width: 100%;
 color: rgb(255, 255, 255);
 text-align: center;
 }
