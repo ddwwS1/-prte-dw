@@ -6,15 +6,6 @@ padding: 0;
 /* family font */
 @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Quicksand:wght@300..700&display=swap');
 
-*{
-font-family: "Quicksand", sans-serif;
-font-optical-sizing: auto;
-font-weight: <weight>;
-font-style: normal;
-}
-
-
-
 input{
 accent-color: rgb(64,64,64);
 }
@@ -51,5 +42,9 @@ height: 45px
 width: 100%;
 color: rgb(255, 255, 255);
 text-align: center;
+font-family: "Quicksand", sans-serif;
+font-optical-sizing: auto;
+font-weight: <weight>;
+font-style: normal;
 }
 
