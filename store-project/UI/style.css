@@ -4,11 +4,12 @@ padding: 0;
 }
 
 /* family font */
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Bungee&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300..700&display=swap');
 
 *{
-  font-family: "Bungee", sans-serif;
-  font-weight: 400;
+  font-family: "Quicksand", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
   font-style: normal;
 }
 
