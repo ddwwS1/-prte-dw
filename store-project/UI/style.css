@@ -28,7 +28,7 @@ background-color: rgb(64,64,64);
 display: flex;
 justfiy-content: center;
 align-items: center;
-box-shadow: 0px 0px 200px black;
+box-shadow: 0px 0px 50px black;
 }
 
 #profile_picture{
