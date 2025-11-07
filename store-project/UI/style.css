@@ -21,7 +21,7 @@ background-color: rgb(242,242,242);
 }
 
 #menu_bar{
-width: 100%;
+max-width: 90%;
 height: 50px;
 padding: 10px;
 background-color: rgb(64,64,64);
