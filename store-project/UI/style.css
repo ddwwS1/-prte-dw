@@ -22,6 +22,8 @@ background-color: rgb(242,242,242);
 }
 
 #background{
+max-width: 100%;
+height: 100%;
 background-image: url("https://raw.githubusercontent.com/ddwwS1/-prte-dw/refs/heads/main/store-project/UI/backgrounds/background1_main.png");
 }
 
