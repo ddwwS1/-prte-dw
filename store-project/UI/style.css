@@ -111,14 +111,14 @@ box-shadow: 0px 0px 50px black;
 width: 45px;
 height: 45px;
 position: absolute;
-right: 75px;
+right: 10px;
 }
 
 #search_icon{
 width: 45px;
 height: 45p;
 position: absolute;
-right: 10px;
+right: 75px;
 }
 
 #main_title{
