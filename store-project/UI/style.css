@@ -85,7 +85,7 @@ accent-color: rgb(64,64,64);
 
 body{
 height: 100%;
-background-color: black;
+background-color: rgb(64,64,64);
 }
 
 #background{
