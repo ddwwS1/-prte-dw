@@ -32,6 +32,7 @@ height: 50px;
 width: 50px;
 margin-left: auto;
 position: relative;
+z-index: 10;
 }
 
 .ham-menu span{
