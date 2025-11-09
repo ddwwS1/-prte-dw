@@ -36,7 +36,6 @@ z-index: 10;
 }
 
 .ham-menu span{
-pointer-events: none;
 height: 7px;
 width: 100%;
 background-color: white;
