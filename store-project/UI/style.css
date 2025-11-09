@@ -67,6 +67,12 @@ opacity: 0;
 top: 50%;
 transform: translate(-50%, -50%) rotate(-45deg);
 }
+.ham-menu.active #search_icon{
+opacity: 0;
+}
+.ham-menu.active #shopping_cart{
+opacity: 0;
+}
 
 li{
 color: white;
