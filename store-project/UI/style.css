@@ -183,7 +183,6 @@ text-shadow: 5px 5px 9px rgb(0, 0, 0);
    width: fit-content;
    gap: 10px;
    overflow-x: auto;
-   max-width: 100%;
    position: relative;
    top: 20px;
 }
