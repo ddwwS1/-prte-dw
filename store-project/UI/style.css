@@ -178,11 +178,13 @@ text-shadow: 5px 5px 9px rgb(0, 0, 0);
 
 .main-grid{
    display: grid;
+   grid-auto-flow: column;
+   grid-template-rows: 1fr;
+   gap: 10px;
+   overflow-x: auto;
    max-width: 100%;
    position: relative;
    top: 20px;
-   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-   grid-template-rows: 1;
    padding: 20px;
 }
 
