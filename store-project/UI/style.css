@@ -17,6 +17,7 @@ justify-content: center;
 align-items: center;
 text-align: center;
 transition: .3s ease;
+z-index: 10;
 }
 .off-screen-menu.active{
 right: 0;
@@ -136,16 +137,22 @@ position: absolute;
 left: 0;
 }
 
+/* main grid*/
+
+.main-grid{
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+   grid-template-rows: 1;
+   padding: 20px;
+}
+
 
 /* product cards*/
 
 .tap-sensor{
-height: 200px;
-width: 200px;
-position: absolute;
-display: flex;
-justify-content: center;
-align-items: flex-center;
+height: auto;
+width: 100%;
+position: relative;
 z-index: 6;
 }
 
@@ -155,13 +162,8 @@ width: 350px;
 background-color: transparent;
 border-radius: 25px;
 box-shadow: 0px 0px 50px ;
-position: absolute;
-display: flex;
-justify-content: center;
-align-items: flex-center;
+position: relative;
 backdrop-filter: blur(10px);
-left: 20px;
-top: 20px;
 }
 .price-box{
     max-height: fit-content;
