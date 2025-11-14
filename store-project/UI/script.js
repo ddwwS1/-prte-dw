@@ -1,5 +1,5 @@
 console.log("script.js is working!");
-alert("Your JavaScript file is linked!");
+alert("JavaScript file is working!");
 
 const hamMenu = document.querySelector('.ham-menu');
 
