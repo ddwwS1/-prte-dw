@@ -185,6 +185,7 @@ text-shadow: 5px 5px 9px rgb(0, 0, 0);
    overflow-x: auto;
    position: relative;
    top: 20px;
+   scrollbar-width: none;
 }
 
 
