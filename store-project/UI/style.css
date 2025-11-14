@@ -137,10 +137,25 @@ position: absolute;
 left: 0;
 }
 
+
+.section_title{
+width: 100%;
+color: rgb(255, 255, 255);
+font-size: 50px;
+position: relative;
+top: 20px;
+left: 20px;
+-webkit-text-stroke: 1px rgb(0, 0, 0);
+text-shadow: 5px 5px 9px rgb(0, 0, 0);
+
+}
+
 /* main grid*/
 
 .main-grid{
    display: grid;
+   position: relative;
+   top: 20px;
    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
    grid-template-rows: 1;
    padding: 20px;
@@ -171,7 +186,7 @@ backdrop-filter: blur(10px);
     background-color: transparent;
     outline: 2px solid rgba(0, 0, 0, 0.164);
     padding: 2px;
-    opacity: 60%;
+    opacity: 0.6;
     border-radius: 25px;
     position: absolute;
     right: 10px;
@@ -181,9 +196,10 @@ backdrop-filter: blur(10px);
 }
 
 .price-number{
-    color: chartreuse;
+    color: rgb(0, 255, 115);
     text-align: center;
     position: relative;
+    text-shadow: 10px 10px 6px rgb(0, 0, 0);
     right: 3px;
 }
 
@@ -204,11 +220,7 @@ text-shadow: 1px 1px 9px rgb(255, 255, 255);
     height: 250px;
     width: 350px;
     border-radius: 25px;
-    object-fit: contain;
     position: relative;
-    background-image: url(https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/backgrounds/IMG_0231.jpg?raw=true);
-    top: -0px;
-    filter: revert;
 }
 
 .pr-img::before {
@@ -218,4 +230,23 @@ text-shadow: 1px 1px 9px rgb(255, 255, 255);
   background: inherit;
   filter: blur(10px);
   z-index: -1;
+}
+
+/* grid cards*/
+/*imaes*/
+.card1{
+background-image: url(https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/backgrounds/IMG_0231.jpg?raw=true);
+object-fit: contain;
+}
+.card2{
+background-image: url(https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/backgrounds/insung-yoon-mru38VH7tII-unsplash.jpg?raw=true);
+object-fit: contain;
+}
+.card3{
+background-image: url(https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/backgrounds/sam-grozyan-SJmrfth38ig-unsplash.jpg%20-%20Copy.png?raw=true);
+object-fit: contain;
+}
+.card4{
+background-image: url(https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/backgrounds/gijs-coolen-xyY5GohSfUw-unsplash.jpg?raw=true);
+object-fit: contain;
 }
