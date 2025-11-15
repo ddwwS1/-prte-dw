@@ -186,7 +186,7 @@ text-shadow: 5px 5px 9px rgb(0, 0, 0);
    position: relative;
    top: 20px;
    scrollbar-width: none;
-   left: 20px;
+   padding: 20px;
 }
 
 
@@ -208,6 +208,11 @@ box-shadow: 0px 0px 50px ;
 position: relative;
 backdrop-filter: blur(10px);
 box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.8);
+transition: transform 0.3s ease;
+}
+
+.pr-card:hover{
+    transform: scale(1.05);
 }
 .price-box{
     max-height: fit-content;
