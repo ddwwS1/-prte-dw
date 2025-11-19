@@ -49,3 +49,13 @@ if (mainGrid) {
 } else {
   console.error("Main grid not found!");
 }
+
+// off-screen menu
+//login button click event
+const item = document.getElementById('log-in-button');
+
+  item.addEventListener('click', () => {
+    alert('Item clicked!');
+  window.location.href = "myaccount.html";
+  });
+
