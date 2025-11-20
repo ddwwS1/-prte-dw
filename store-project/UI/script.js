@@ -1,15 +1,15 @@
 console.log("script.js is working!");
 alert("JavaScript file is working!");
 
-const hamMenu = document.querySelector('.ham-menu');
+const hamMenu = document.querySelector(".ham-menu");
 
-const offScreenMenu = document.querySelector('.off-screen-menu');
+const offScreenMenu = document.querySelector(".off-screen-menu");
 
 if (hamMenu && offScreenMenu) {
-  hamMenu.addEventListener('click', () =>{
-    hamMenu.classList.toggle('active');
-    offScreenMenu.classList.toggle('active');
-  })
+  hamMenu.addEventListener("click", () => {
+    hamMenu.classList.toggle("active");
+    offScreenMenu.classList.toggle("active");
+  });
   console.log("Ham menu event listener attached");
 } else {
   console.error("Ham menu or off-screen menu not found!");
@@ -24,7 +24,7 @@ const firebaseConfig = {
   storageBucket: "prte-dw.firebasestorage.app",
   messagingSenderId: "644047694920",
   appId: "1:644047694920:web:ba31fab647475d55f83c7d",
-  measurementId: "G-MN59W6T8W7"
+  measurementId: "G-MN59W6T8W7",
 };
 
 // Initialize Firebase
@@ -37,14 +37,18 @@ try {
 }
 
 // Enable horizontal scrolling on main grid with mouse wheel
-const mainGrid = document.querySelector('.main-grid');
+const mainGrid = document.querySelector(".main-grid");
 
 if (mainGrid) {
-  mainGrid.addEventListener('wheel', (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    mainGrid.scrollLeft += e.deltaY * 0.5;
-  }, { passive: false });
+  mainGrid.addEventListener(
+    "wheel",
+    (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      mainGrid.scrollLeft += e.deltaY * 0.5;
+    },
+    { passive: false }
+  );
   console.log("Wheel scroll listener attached to main grid");
 } else {
   console.error("Main grid not found!");
@@ -52,10 +56,9 @@ if (mainGrid) {
 
 // off-screen menu
 //login button click event
-const item = document.getElementById('log-in-button');
+const item = document.getElementById("log-in-button");
 
-  item.addEventListener('click', () => {
-    alert('Item clicked!');
+item.addEventListener("click", () => {
+  alert("Item clicked!");
   window.location.href = "myaccount.html";
-  });
-
+});
