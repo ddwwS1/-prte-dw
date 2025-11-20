@@ -42,7 +42,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // Sign-in button
-const item = document.getElementById('sign-in-btn');
+const item = document.getElementById('sgn-w-google-btn');
 if (item) {
   item.addEventListener('click', async () => {
       try {
