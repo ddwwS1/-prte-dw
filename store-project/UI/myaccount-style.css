@@ -60,11 +60,13 @@ body{
     height: 30px;
     width: 30px;
     background-size: contain;
-    background-image: url(icons/brand/ic_google_rgb.png);
+    background-image: url(https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/icons/brand/ic_google_rgb.png?raw=true);
+    pointer-events: none;
 }
 
 #sgn-w-google-txt{
     color: black;
     font-size: 20px;
     font-weight: 600;
+    pointer-events: none;
 }
