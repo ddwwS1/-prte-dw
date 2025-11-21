@@ -53,7 +53,6 @@ if (item) {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       console.log('Sign-in successful:', user.displayName || user.email);
-      alert(`Signed in as ${user.displayName || user.email}`); 
       
     } catch (err) {
       console.error('Sign-in failed:', err);
