@@ -93,6 +93,7 @@ nav {
 #profile-img {
   height: 35px;
   width: 35px;
+  border-radius: 50%;
   position: relative;
   left: 10px;
   object-fit: contain;
