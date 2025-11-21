@@ -90,6 +90,7 @@ onAuthStateChanged(auth, (user) => {
     
     // Update username heading if signed in
     const heading = document.getElementById('profile-name');
+    document.getElementById("profile-img").src = user.photoURL;
     if (heading) {
       heading.textContent = user.displayName || user.email;
     }
