@@ -62,3 +62,41 @@ item.addEventListener("click", () => {
   alert("Item clicked!");
   window.location.href = "myaccount.html";
 });
+
+
+// auth.js — Google sign-in using Firebase CDN modules (ES module imports)
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+
+console.log('auth.js loaded');
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+try {
+  getAnalytics(app);
+} catch (e) {
+  console.warn('Analytics not available:', e?.message || e);
+}
+
+// Auth setup
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
+auth.languageCode = 'en';
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    console.log('User signed in:', user.displayName || user.email);
+    
+    // Update username heading if signed in
+    const heading = document.getElementById('profile-name');
+    if (heading) {
+      heading.textContent = user.displayName || user.email;
+    }
+  } else {
+    console.log('No user signed in');
+  }
+});
+
+
+  

@@ -54,14 +54,7 @@ if (item) {
       const user = result.user;
       console.log('Sign-in successful:', user.displayName || user.email);
       alert(`Signed in as ${user.displayName || user.email}`); 
-      signInWithPopup(auth, provider)
-  .then((result) => {
-    const user = result.user;
-    console.log("UID:", user.uid);
-    console.log("Name:", user.displayName);
-    console.log("Email:", user.email);
-    console.log("Photo:", user.photoURL);
-  });
+      
     } catch (err) {
       console.error('Sign-in failed:', err);
       alert('Sign-in failed: ' + (err?.message || err));
@@ -70,3 +63,13 @@ if (item) {
 } else {
   console.error("Sign-in button with id 'sgn-w-google-btn' not found in the DOM.");
 }
+
+
+signInWithPopup(auth, provider)
+    .then((result) => {
+    const user = result.user;
+    console.log("UID:", user.uid);
+    console.log("Name:", user.displayName);
+    console.log("Email:", user.email);
+    console.log("Photo:", user.photoURL);
+    });
