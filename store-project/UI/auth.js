@@ -1,7 +1,4 @@
-// auth.js — Google sign-in using Firebase v12 modules (ES module imports)
-// Avoid loading legacy or web-extension-only imports.
-
-// Import Firebase modules directly from the CDN as ES modules
+// auth.js — Google sign-in using Firebase CDN modules (ES module imports)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
@@ -36,37 +33,40 @@ auth.languageCode = 'en';
 onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log('User signed in:', user.displayName || user.email);
+    
+    // Update username heading if signed in
+    const heading = document.getElementById('username');
+    if (heading) {
+      heading.textContent = user.displayName || user.email;
+    }
   } else {
     console.log('No user signed in');
   }
 });
 
-// Sign-in button
+// Sign-in button — use popup
 const item = document.getElementById('sgn-w-google-btn');
 if (item) {
   item.addEventListener('click', async () => {
-      try {
-        console.log('Attempting sign-in with popup; origin:', location.origin);
-        const result = await signInWithPopup(auth, provider);
-        const credential = GoogleAuthProvider.credentialFromResult(result);
-        const user = result.user;
-        console.log('Sign-in successful', user);
-        alert(`Signed in as ${user.displayName || user.email}`);
-
-        // Update username heading if present (try common IDs)
-        const heading = document.getElementById('username') || document.getElementById('useername');
-        if (heading) {
-          heading.textContent = user.displayName || user.email;
-        } else {
-          console.warn("Username heading element not found (tried 'username' and 'useername')");
-        }
-      } catch (err) {
+    try {
+      console.log('Attempting sign-in with popup; origin:', location.origin);
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      console.log('Sign-in successful:', user.displayName || user.email);
+      alert(`Signed in as ${user.displayName || user.email}`); 
+      signInWithPopup(auth, provider)
+  .then((result) => {
+    const user = result.user;
+    console.log("UID:", user.uid);
+    console.log("Name:", user.displayName);
+    console.log("Email:", user.email);
+    console.log("Photo:", user.photoURL);
+  });
+    } catch (err) {
       console.error('Sign-in failed:', err);
       alert('Sign-in failed: ' + (err?.message || err));
     }
   });
 } else {
-  console.error("Sign-in button with id 'sign-in-btn' not found in the DOM.");
+  console.error("Sign-in button with id 'sgn-w-google-btn' not found in the DOM.");
 }
-
-
