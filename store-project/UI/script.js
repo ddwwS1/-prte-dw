@@ -1,5 +1,4 @@
 console.log("script.js is working!");
-alert("JavaScript file is working!");
 
 const hamMenu = document.querySelector(".ham-menu");
 
@@ -59,7 +58,6 @@ if (mainGrid) {
 const item = document.getElementById("profile-button");
 
 item.addEventListener("click", () => {
-  alert("Item clicked!");
   window.location.href = "myaccount.html";
 });
 
