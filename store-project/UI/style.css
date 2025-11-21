@@ -2,12 +2,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Momo+Signature&family=Quicksand:wght@300..700&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Caesar+Dressing&family=Caveat:wght@700&family=Momo+Signature&family=Quicksand:wght@300..700&display=swap");
 
-@media screen and (max-width: 450px) {
-  .off-screen-menu {
-    padding-top: 45px !important;
-;
-  }
-}
 /*off screen menu*/
 .off-screen-menu {
   background-color: transparent;
@@ -427,3 +421,9 @@ body {
     font-size: 32px;
   }
 }
+
+@media screen and (max-width: 500px) {
+  .off-screen-menu {
+    padding-top: 45px !important;
+;
+  }
