@@ -56,7 +56,7 @@ if (mainGrid) {
 
 // off-screen menu
 //login button click event
-const item = document.getElementById("log-in-button");
+const item = document.getElementById("profile-button");
 
 item.addEventListener("click", () => {
   alert("Item clicked!");

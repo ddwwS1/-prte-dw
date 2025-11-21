@@ -3,8 +3,9 @@
 @import url("https://fonts.googleapis.com/css2?family=Caesar+Dressing&family=Caveat:wght@700&family=Momo+Signature&family=Quicksand:wght@300..700&display=swap");
 
 @media screen and (max-width: 450px) {
-  #off-menu-head {
-    margin-top: 100px;
+  .off-screen-menu {
+    padding-top: 45px !important;
+;
   }
 }
 /*off screen menu*/
@@ -119,14 +120,7 @@ nav {
   left: center;
   z-index: 10;
 }
-#log-in-txt {
-  width: 100%;
-  text-align: center;
-  position: absolute;
-}
-#log-in-txt:hover {
-  text-decoration: underline;
-}
+
 
 li {
   color: white;
