@@ -368,36 +368,23 @@ body {
   height: 250px;
   width: 350px;
   border-radius: 25px;
-  position: relative;
+  position: relative; 
+  object-fit: contain;
 }
 
-.pr-img::before {
-  content: "";
+.pr-img-holder {
+  height: 250px;
+  width: 100%;
   position: absolute;
   inset: 0;
-  background: inherit;
+  background-size: cover;
+  background-position: center;
   filter: blur(10px);
-  z-index: -1;
+  z-index: 0;
 }
 
 /* grid cards*/
 /*imaes*/
-.card1 {
-  background-image: url(https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/backgrounds/IMG_0231.jpg?raw=true);
-  object-fit: contain;
-}
-.card2 {
-  background-image: url(https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/backgrounds/insung-yoon-mru38VH7tII-unsplash.jpg?raw=true);
-  object-fit: contain;
-}
-.card3 {
-  background-image: url(https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/backgrounds/sam-grozyan-SJmrfth38ig-unsplash.jpg%20-%20Copy.png?raw=true);
-  object-fit: contain;
-}
-.card4 {
-  background-image: url(https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/backgrounds/gijs-coolen-xyY5GohSfUw-unsplash.jpg?raw=true);
-  object-fit: contain;
-}
 
 /* mobile responsive */
 @media (max-width: 768px) {

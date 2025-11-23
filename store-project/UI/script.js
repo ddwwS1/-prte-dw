@@ -78,7 +78,9 @@ async function loadProducts() {
           <div class="price-box">
             <p class="price-number">${price}$</p>
           </div>
+          <div class="pr-img-holder"></div>
           <img class="pr-img" src="${image || 'https://via.placeholder.com/300x300?text=No+Image'}">
+          
           <p class="pr-name">${name}</p>
           <div class="add-tint">
             <div class="add-to-cart">
@@ -86,7 +88,17 @@ async function loadProducts() {
             </div>
           </div>
         </div>
-      `;
+      `
+const holder = card.querySelector(".pr-img-holder");
+const imgTag = card.querySelector(".pr-img"); // ✅ FIXED: search from card, not holder
+
+if (holder && imgTag && imgTag.src) {
+  holder.style.backgroundImage = `url('${imgTag.src}')`;
+  holder.style.backgroundSize = "cover";
+  holder.style.backgroundPosition = "center";
+}
+
+      ;
       grid.appendChild(card);
     });
   } catch (err) {
