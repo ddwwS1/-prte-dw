@@ -1,6 +1,10 @@
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+// ✅ Firebase ES module imports
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { getAuth, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
 
+// ✅ Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyDUPV60SGFALV3si5L7qkX2zxl4UTxW6pU",
   authDomain: "prte-dw.firebaseapp.com",
@@ -12,96 +16,50 @@ const firebaseConfig = {
   measurementId: "G-MN59W6T8W7"
 };
 
-console.log("script.js is working!");
+// ✅ Initialize Firebase once
+const app = initializeApp(firebaseConfig);
+getAnalytics(app);
+const db = getFirestore(app);
+const auth = getAuth(app);
 
+// ✅ UI: Hamburger menu
 const hamMenu = document.querySelector(".ham-menu");
-
 const offScreenMenu = document.querySelector(".off-screen-menu");
-
 if (hamMenu && offScreenMenu) {
   hamMenu.addEventListener("click", () => {
     hamMenu.classList.toggle("active");
     offScreenMenu.classList.toggle("active");
   });
-  console.log("Ham menu event listener attached");
-} else {
-  console.error("Ham menu or off-screen menu not found!");
 }
 
-// Initialize Firebase
-try {
-  firebase.initializeApp(firebaseConfig);
-  firebase.analytics();
-  console.log("Firebase initialized successfully");
-} catch (error) {
-  console.error("Firebase initialization error:", error);
-}
-
-// Enable horizontal scrolling on main grid with mouse wheel
+// ✅ UI: Horizontal scroll
 const mainGrid = document.querySelector(".main-grid");
-
 if (mainGrid) {
-  mainGrid.addEventListener(
-    "wheel",
-    (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      mainGrid.scrollLeft += e.deltaY * 0.5;
-    },
-    { passive: false }
-  );
-  console.log("Wheel scroll listener attached to main grid");
-} else {
-  console.error("Main grid not found!");
+  mainGrid.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    mainGrid.scrollLeft += e.deltaY * 0.5;
+  }, { passive: false });
 }
 
-// off-screen menu
-//login button click event
+// ✅ UI: Profile button
 const item = document.getElementById("profile-button");
-
-item.addEventListener("click", () => {
-  window.location.href = "myaccount.html";
-});
-
-
-// auth.js — Google sign-in using Firebase CDN modules (ES module imports)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
-
-console.log('auth.js loaded');
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-try {
-  getAnalytics(app);
-} catch (e) {
-  console.warn('Analytics not available:', e?.message || e);
+if (item) {
+  item.addEventListener("click", () => {
+    window.location.href = "myaccount.html";
+  });
 }
 
-// Auth setup
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-auth.languageCode = 'en';
-
+// ✅ Auth state listener
 onAuthStateChanged(auth, (user) => {
+  const heading = document.getElementById("profile-name");
+  const img = document.getElementById("profile-img");
   if (user) {
-    console.log('User signed in:', user.displayName || user.email);
-    
-    // Update username heading if signed in
-    const heading = document.getElementById('profile-name');
-    document.getElementById("profile-img").src = user.photoURL;
-    if (heading) {
-      heading.textContent = user.displayName || user.email;
-    }
-  } else {
-    console.log('No user signed in');
+    if (heading) heading.textContent = user.displayName || user.email;
+    if (img) img.src = user.photoURL;
   }
 });
 
-const db = getFirestore(app);
-
-// Function to load products
+// ✅ Load products from Firestore
 async function loadProducts() {
   const grid = document.getElementById("product-grid");
   if (!grid) return console.error("Missing #product-grid");
@@ -111,7 +69,7 @@ async function loadProducts() {
   try {
     const snapshot = await getDocs(collection(db, "products"));
     snapshot.forEach((doc) => {
-      const { name, price, description, image } = doc.data();
+      const { name, price, image } = doc.data();
 
       const card = document.createElement("div");
       card.classList.add("tap-sensor");
@@ -136,5 +94,5 @@ async function loadProducts() {
   }
 }
 
-// Run on page load
+// ✅ Run on page load
 loadProducts();
