@@ -43,8 +43,13 @@ onAuthStateChanged(auth, (user) => {
     if (heading) {
       heading.textContent = user.displayName || user.email;
     }
+
+    const googlebtntxt = document.getElementById('sgn-w-google-txt');
+    if (googlebtntxt) {
+      googlebtntxt.textContent = "Change Google Account";
+    }
   } else {
-    console.log('No user signed in');
+  
   }
 });
 
