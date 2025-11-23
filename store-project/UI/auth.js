@@ -2,6 +2,10 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { getStorage } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
+
+
 
 console.log('auth.js loaded');
 
@@ -53,7 +57,22 @@ if (item) {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       console.log('Sign-in successful:', user.displayName || user.email);
-      
+      const db = getFirestore(app);
+      const storage = getStorage(app);
+
+      // Save user profile to Firestore (create or overwrite document at users/{uid})
+      try {
+        await setDoc(doc(db, "users", user.uid), {
+          name: user.displayName || '',
+          email: user.email || '',
+          profilePicture: user.photoURL || '',
+          createdAt: new Date().toISOString()
+        });
+        console.log('User data saved to Firestore for uid:', user.uid);
+      } catch (e) {
+        console.error('Failed to save user data to Firestore:', e);
+      }
+
     } catch (err) {
       console.error('Sign-in failed:', err);
       alert('Sign-in failed: ' + (err?.message || err));
@@ -64,11 +83,7 @@ if (item) {
 }
 
 
-signInWithPopup(auth, provider)
-    .then((result) => {
-    const user = result.user;
-    console.log("UID:", user.uid);
-    console.log("Name:", user.displayName);
-    console.log("Email:", user.email);
-    console.log("Photo:", user.photoURL);
-    });
+// Sign-in is handled via the click handler above; no extra automatic call here.
+    
+    
+
