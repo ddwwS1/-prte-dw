@@ -1,3 +1,17 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDUPV60SGFALV3si5L7qkX2zxl4UTxW6pU",
+  authDomain: "prte-dw.firebaseapp.com",
+  databaseURL: "https://prte-dw-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "prte-dw",
+  storageBucket: "prte-dw.firebasestorage.app",
+  messagingSenderId: "644047694920",
+  appId: "1:644047694920:web:ba31fab647475d55f83c7d",
+  measurementId: "G-MN59W6T8W7"
+};
+
 console.log("script.js is working!");
 
 const hamMenu = document.querySelector(".ham-menu");
@@ -13,18 +27,6 @@ if (hamMenu && offScreenMenu) {
 } else {
   console.error("Ham menu or off-screen menu not found!");
 }
-
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyDUPV60SGFALV3si5L7qkX2zxl4UTxW6pU",
-  authDomain: "prte-dw.firebaseapp.com",
-  databaseURL: "https://prte-dw-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "prte-dw",
-  storageBucket: "prte-dw.firebasestorage.app",
-  messagingSenderId: "644047694920",
-  appId: "1:644047694920:web:ba31fab647475d55f83c7d",
-  measurementId: "G-MN59W6T8W7",
-};
 
 // Initialize Firebase
 try {
@@ -97,5 +99,42 @@ onAuthStateChanged(auth, (user) => {
   }
 });
 
+const db = getFirestore(app);
 
-  
+// Function to load products
+async function loadProducts() {
+  const grid = document.getElementById("product-grid");
+  if (!grid) return console.error("Missing #product-grid");
+
+  grid.innerHTML = "";
+
+  try {
+    const snapshot = await getDocs(collection(db, "products"));
+    snapshot.forEach((doc) => {
+      const { name, price, description, image } = doc.data();
+
+      const card = document.createElement("div");
+      card.classList.add("tap-sensor");
+      card.innerHTML = `
+        <div class="pr-card">
+          <div class="price-box">
+            <p class="price-number">${price}$</p>
+          </div>
+          <img class="pr-img" src="${image || 'https://via.placeholder.com/300x300?text=No+Image'}">
+          <p class="pr-name">${name}</p>
+          <div class="add-tint">
+            <div class="add-to-cart">
+              <img class="add-cart-img" src="https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/icons/ic_plus_white.png?raw=true">
+            </div>
+          </div>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  } catch (err) {
+    console.error("Failed to load products:", err);
+  }
+}
+
+// Run on page load
+loadProducts();
