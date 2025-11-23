@@ -34,6 +34,28 @@ body {
   width: 100%;
 }
 
+#profile-pic-holder {
+  height: 150px;
+  width: 150px;
+  border-radius: 50%;
+  background-color: rgba( 255, 255, 255, 0.25 );
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
+}
+
+#profile-pic {
+  height: 100%;
+  width: 100%;
+  border-radius: 50%;
+  align-self: center;
+  background-image: url(https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/icons/ic-profile-white.png?raw=true);
+  background-size: contain;
+  background-position: center;
+}
+
 #username {
   font-size: 40px;
   margin-top: 10px;

@@ -48,8 +48,20 @@ onAuthStateChanged(auth, (user) => {
     if (googlebtntxt) {
       googlebtntxt.textContent = "Change Google Account";
     }
+    // Update profile picture if available
+    const profilePicHolder = document.getElementById('profile-pic-holder');
+    const profilePic = document.getElementById('profile-pic');
+    if (profilePicHolder && profilePic) {
+      if (user.photoURL) {
+        profilePic.style.backgroundImage = `url(${user.photoURL})`;
+        profilePicHolder.style.display = 'block';
+      } else {
+        profilePicHolder.style.display = 'none';
+      }
+    
   } else {
   
+  }
   }
 });
 
