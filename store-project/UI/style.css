@@ -135,7 +135,7 @@ input {
 }
 
 body {
-  height: 100%;
+  height: 100vh;
   background-color: rgb(64, 64, 64);
   overflow-x: hidden;
   width: 100vw;
@@ -144,8 +144,7 @@ body {
 
 #background {
   width: 100%;
-  max-height: fit-content;
-  padding-bottom: 200%;
+  height: 100vh;
   background-size: contain;
   background-repeat: repeat;
   background-image: url(https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/backgrounds/background1_main.png?raw=true);
@@ -267,6 +266,7 @@ body {
   overflow: hidden;
   backdrop-filter: blur(10px);
   box-shadow: inset 0 0 10px rgba(255, 255, 255, 0.8);
+  will-change: transform;
   transition: transform 0.3s ease;
 }
 .pr-card .add-tint {
