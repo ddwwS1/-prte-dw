@@ -98,6 +98,7 @@ nav {
 
 /* ====== General ====== */
 li { color: white; }
+
 * {
   margin: 0;
   padding: 0;
@@ -179,7 +180,7 @@ body {
   grid-auto-flow: column;
   grid-auto-columns: 350px;
   gap: 15px;
-  width: 100%;
+  width: auto;
   overflow-x: auto;
   padding: 20px;
   scrollbar-width: none;
@@ -203,6 +204,9 @@ body {
 .pr-card:hover {
   transform: scale(1.05);
   backdrop-filter: blur(10px) brightness(1.1);
+}
+.pr-card:hover .add-tint {
+  display: flex;
 }
 .price-box {
   background-color: rgba(0,0,0,0.2);
@@ -235,7 +239,7 @@ body {
   position: absolute;
   bottom: 10px;
   right: 10px;
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   transition: 0.3s ease;
@@ -244,12 +248,12 @@ body {
   outline: 2px solid rgb(0, 0, 0);
   transform: scale(1.08);
   backdrop-filter: blur(20px);
+  display: block
 }
 .add-cart-img {
   height: 20px;
   width: 20px;
   object-fit: contain;
-  display: block;
 }
 .pr-img {
   height: 250px;
