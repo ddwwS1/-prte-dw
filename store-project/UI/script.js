@@ -79,8 +79,7 @@ async function loadProducts() {
             <p class="price-number">${price}$</p>
           </div>
           <div class="pr-img-holder"></div>
-          <img class="pr-img" src="${image || 'https://via.placeholder.com/300x300?text=No+Image'}">
-          
+          <img class="pr-img" src="${image || 'https://via.placeholder.com/300x300?text=No+Image'}" alt="Product" loading="lazy">
           <p class="pr-name">${name}</p>
           <div class="add-tint">
             <div class="add-to-cart">
