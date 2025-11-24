@@ -28,6 +28,7 @@ nav {
   width: 50px;
   margin-left: auto;
   position: relative;
+  cursor: pointer;
   z-index: 10;
 }
 .ham-menu span {
@@ -64,7 +65,7 @@ nav {
   margin: 20px;
   justify-content: center;
   align-items: center;
-
+  cursor: pointer;
 }
 #profile-button {
   height: 50px;
@@ -197,6 +198,7 @@ body {
   backdrop-filter: blur(6px);
   transition: transform 0.25s ease;
   will-change: transform;
+  cursor: pointer;
 }
 .pr-card:hover {
   transform: scale(1.05);
