@@ -69,7 +69,7 @@ body {
   width: 100%;
   border-radius: 50%;
   align-self: center;
-  background-image: url(https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/icons/ic-profile-white.png?raw=true);
+  background-image: url(../images/icons/ic_user_white.png);
   background-size: contain;
   background-position: center;
 }
@@ -101,7 +101,7 @@ body {
   height: 30px;
   width: 30px;
   background-size: contain;
-  background-image: url(https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/icons/brand/ic_google_rgb.png?raw=true);
+  background-image: url(../images/brand_icons/ic_google_brand.png);
   pointer-events: none;
 }
 

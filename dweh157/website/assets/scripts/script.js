@@ -83,7 +83,7 @@ async function loadProducts() {
           <p class="pr-name">${name}</p>
           <div class="add-tint">
             <div class="add-to-cart">
-              <img class="add-cart-img" src="https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/icons/ic_plus_white.png?raw=true">
+              <img class="add-cart-img" src="../images/icons/ic_plus_white.png" alt="Add to cart">
             </div>
           </div>
         </div>
