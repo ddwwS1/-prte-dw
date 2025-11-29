@@ -105,5 +105,15 @@ if (holder && imgTag && imgTag.src) {
   }
 }
 
+
 // ✅ Run on page load
 loadProducts();
+
+//grid scroll sensitivity
+
+const grid = document.querySelector('.main-grid');
+
+grid.addEventListener('wheel', (e) => {
+  e.preventDefault(); // stop default scroll
+  grid.scrollTop += e.deltaY * 2; // multiplier = faster scroll
+}, { passive: false });

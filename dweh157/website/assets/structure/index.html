@@ -16,11 +16,11 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../css/style.css">
 
 <!-- Firebase SDK from CDN -->
 <script src="https://www.gstatic.com/firebasejs/10.7.2/firebase-app.js"></script>
-<script src="script.js" defer type="module"></script>
+<script src="../scripts/script.js" defer type="module"></script>
 
 
 </head>
@@ -28,13 +28,17 @@
 <body>
 <div id="background">
 <div id="menu_bar">
-
+<!-- off screen menu -->
 <div class="off-screen-menu">
     <ul>
         <div id="off-menu-head">
-            <div id="profile-button">
-                <img id="profile-img" src="https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/icons/ic-profile-white.png?raw=true">
-                <h2 id="profile-name">Guest</h2>
+            <div class="menu-button" id="profile-button">
+                <img class="menu-button-ic" id="profile-img" src="https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/icons/ic-profile-white.png?raw=true">
+                <h2 class="menu-button-txt" id="profile-name">Guest</h2>
+            </div>
+            <div class="menu-button" id="settings-button">
+                <img class="menu-button-ic" id="profile-img" src="https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/icons/white_setting_ic.png?raw=true">
+                <h2 class="menu-button-txt" id="profile-name">settings</h2>
             </div>
         </div>
         

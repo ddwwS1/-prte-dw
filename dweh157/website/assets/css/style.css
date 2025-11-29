@@ -67,7 +67,7 @@ nav {
   align-items: center;
   cursor: pointer;
 }
-#profile-button {
+.menu-button {
   height: 50px;
   width: 90%;
   border-radius: 20px;
@@ -76,14 +76,14 @@ nav {
   display: flex;
   align-items: center;
 }
-#profile-img {
+.menu-button-ic {
   height: 35px;
   width: 35px;
   border-radius: 50%;
   margin-left: 10px;
   object-fit: cover;
 }
-#profile-name {
+.menu-button-txt {
   color: white;
   margin-left: auto;
   margin-right: 15px;
@@ -185,6 +185,7 @@ body {
   padding: 20px;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  overscroll-behavior: contain; /* avoid parent stealing scroll */
 }
 .main-grid::-webkit-scrollbar { display: none; }
 
