@@ -39,7 +39,8 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with:
           # 👇 Upload only the subfolder instead of entire repo
-          path: './dweh157/website/assets/structure'
+          with:
+          path: './dweh157/website/assets'
 
       - name: Deploy to GitHub Pages
         id: deployment
