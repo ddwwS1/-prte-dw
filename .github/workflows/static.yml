@@ -40,7 +40,7 @@ jobs:
         with:
           # 👇 Upload only the subfolder instead of entire repo
           with:
-          path: './dweh157/website/assets'
+          path: './dweh157'
 
       - name: Deploy to GitHub Pages
         id: deployment
