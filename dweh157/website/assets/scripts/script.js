@@ -189,3 +189,15 @@ const inputField = document.getElementById("src_bar");
 searchIcon.addEventListener("click", () => {
   inputField.classList.toggle("tog");
 });
+
+document.addEventListener("keydown", function(e) {
+  // Ignore if user is typing in an input or textarea
+  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
+    return;
+  }
+
+  // Trigger only when S key is pressed
+  if (e.code === "KeyS") {
+  inputField.classList.toggle("tog");
+  }
+});
