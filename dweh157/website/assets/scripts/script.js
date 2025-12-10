@@ -1,8 +1,9 @@
 // ✅ Firebase ES module imports
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import { getAuth, GoogleAuthProvider, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+
 
 // ✅ Firebase config
 const firebaseConfig = {
@@ -67,7 +68,9 @@ async function loadProducts() {
   grid.innerHTML = "";
 
   try {
-    const snapshot = await getDocs(collection(db, "products"));
+    const q = query(collection(db, "products"), where("type", "==", "featured"));
+    const snapshot = await getDocs(q);
+
     snapshot.forEach((doc) => {
       const { name, price, image } = doc.data();
 
@@ -105,15 +108,56 @@ if (holder && imgTag && imgTag.src) {
   }
 }
 
-
 // ✅ Run on page load
 loadProducts();
 
-//grid scroll sensitivity
+/* ==================== dicounted grid ==================== */
+// ✅ Load products from Firestore
+async function loadProducts2() {
+  const grid2 = document.getElementById("product-grid2");
+  if (!grid2) return console.error("Missing #product-grid2");
 
-const grid = document.querySelector('.main-grid');
+  grid2.innerHTML = "";
 
-grid.addEventListener('wheel', (e) => {
-  e.preventDefault(); // stop default scroll
-  grid.scrollTop += e.deltaY * 2; // multiplier = faster scroll
-}, { passive: false });
+  try {
+   const q2 = query(collection(db, "products"), where("type", "==", "discounted"));
+    const snapshot2 = await getDocs(q2);
+    snapshot2.forEach((doc) => {
+      const { name, price, image } = doc.data();
+
+      const card2 = document.createElement("div");
+      card2.classList.add("tap-sensor");
+      card2.innerHTML = `
+        <div class="pr-card">
+          <div class="price-box">
+            <p class="price-number">${price}$</p>
+          </div>
+          <div class="pr-img-holder"></div>
+          <img class="pr-img" src="${image || 'https://via.placeholder.com/300x300?text=No+Image'}" alt="Product" loading="lazy">
+          <p class="pr-name">${name}</p>
+          <div class="add-tint">
+            <div class="add-to-cart">
+              <img class="add-cart-img" src="../images/icons/ic_plus_white.png" alt="Add to cart">
+            </div>
+          </div>
+        </div>
+      `
+const holder = card2.querySelector(".pr-img-holder");
+const imgTag = card2.querySelector(".pr-img"); // ✅ FIXED: search from card, not holder
+
+if (holder && imgTag && imgTag.src) {
+  holder.style.backgroundImage = `url('${imgTag.src}')`;
+  holder.style.backgroundSize = "cover";
+  holder.style.backgroundPosition = "center";
+}
+
+      ;
+      grid2.appendChild(card2);
+    });
+  } catch (err) {
+    console.error("Failed to load products:", err);
+  }
+}
+
+// ✅ Run on page load
+loadProducts2();
