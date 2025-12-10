@@ -161,3 +161,21 @@ if (holder && imgTag && imgTag.src) {
 
 // ✅ Run on page load
 loadProducts2();
+
+const grid1 = document.querySelector('#product-grid1');
+
+if (grid1) {
+  grid1.addEventListener('wheel', (e) => {
+    e.preventDefault(); // stop default vertical scroll
+    grid1.scrollLeft += e.deltaY * 2; // multiplier controls speed
+  }, { passive: false });
+}
+
+const grid2 = document.querySelector('#product-grid2');
+
+if (grid2) {
+  grid2.addEventListener('wheel', (e) => {
+    e.preventDefault(); // stop default vertical scroll
+    grid2.scrollLeft += e.deltaY * 0.5; // multiplier controls speed
+  }, { passive: false });
+}
