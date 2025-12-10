@@ -33,7 +33,7 @@ body {
   max-height: fit-content;
   background-size: contain;
   background-repeat: repeat;
-  background-image: url(https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/backgrounds/background2_myaccount.png?raw=true);
+  background-image: url(../images/backgrounds/ink-stroke-wallpaper.png);
   overflow: hidden;
   box-sizing: border-box;
 }
