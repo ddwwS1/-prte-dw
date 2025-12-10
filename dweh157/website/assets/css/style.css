@@ -131,7 +131,7 @@ body {
   align-items: center;
   box-shadow: 0 0 20px rgba(0,0,0,0.8);
 }
-#shopping_cart, #sh-card, #search_icon {
+#shopping_cart, #sh-card, #mag-card, #search_icon {
   width: 45px;
   height: 45px;
 }
@@ -153,8 +153,46 @@ body {
   font-size: 13px;
   top: -8px;
   right: -5px;
+  cursor: pointer;
 }
-#search_icon { right: 75px; position: absolute; }
+#search-icon{
+
+}
+
+#mag-card {
+right: 75px; 
+position: absolute;
+cursor: pointer;
+}
+
+#src_bar {
+  display: flex;
+  align-items: center;
+  width: calc(100% - 250px);
+  padding: 10px;
+  border: 2px solid #00000041;
+  border-radius: 15px;
+  font-size: 16px;
+  outline: none;
+  line-height: 1;
+  overflow: hidden;
+  transition: border-color 0.3s;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: -1;
+
+}
+
+#src_bar:focus {
+  border-color: #000000;
+  box-shadow: 0 0 5px rgba(136, 136, 136, 0.5);
+}
+
+#src_bar.tog {
+   opacity: 100;
+   z-index: 2;
+}
+
 
 #main_title {
   width: 100%;

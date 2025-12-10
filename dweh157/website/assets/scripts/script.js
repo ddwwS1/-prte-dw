@@ -179,3 +179,13 @@ if (grid2) {
     grid2.scrollLeft += e.deltaY * 0.5; // multiplier controls speed
   }, { passive: false });
 }
+
+// Grab the magnifying glass icon container
+const searchIcon = document.getElementById("mag-card");
+// Grab the input field
+const inputField = document.getElementById("src_bar");
+
+// Toggle the input field when the icon is clicked
+searchIcon.addEventListener("click", () => {
+  inputField.classList.toggle("tog");
+});
