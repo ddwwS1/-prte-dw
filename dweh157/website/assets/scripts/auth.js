@@ -2,10 +2,8 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
-
-
 
 console.log('auth.js loaded');
 
@@ -23,32 +21,40 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-try {
-  getAnalytics(app);
-} catch (e) {
-  console.warn('Analytics not available:', e?.message || e);
-}
+try { getAnalytics(app); } catch (e) { console.warn('Analytics not available:', e?.message || e); }
 
 // Auth setup
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
 auth.languageCode = 'en';
 
-onAuthStateChanged(auth, (user) => {
+// Firestore + Storage
+const db = getFirestore(app);
+const storage = getStorage(app);
+
+// Helper: update DOM info section
+function updateInfoSection(data) {
+  const emailTxt = document.getElementById('email-txt');
+  const phoneTxt = document.getElementById('phonenum-txt');
+  const addressTxt = document.getElementById('address-txt');
+
+  if (emailTxt) emailTxt.textContent = "Gmail : " + (data.email || "none");
+  if (phoneTxt) phoneTxt.textContent = "Phone number : " + (data.phoneNumber || "none");
+  if (addressTxt) addressTxt.textContent = "Address : " + (data.address || "none");
+}
+
+// Auth state listener
+onAuthStateChanged(auth, async (user) => {
   if (user) {
     console.log('User signed in:', user.displayName || user.email);
-    
-    // Update username heading if signed in
+
+    // Update username heading
     const heading = document.getElementById('username');
-    if (heading) {
-      heading.textContent = user.displayName || user.email;
-    }
+    if (heading) heading.textContent = user.displayName || user.email;
 
     const googlebtntxt = document.getElementById('sgn-w-google-txt');
-    if (googlebtntxt) {
-      googlebtntxt.textContent = "Change Google Account";
-    }
-    // Update profile picture if available
+    if (googlebtntxt) googlebtntxt.textContent = "Change Google Account";
+
     const profilePicHolder = document.getElementById('profile-pic-holder');
     const profilePic = document.getElementById('profile-pic');
     if (profilePicHolder && profilePic) {
@@ -58,10 +64,45 @@ onAuthStateChanged(auth, (user) => {
       } else {
         profilePicHolder.style.display = 'none';
       }
-    
-  } else {
-  
-  }
+    }
+
+    // Firestore user doc
+    try {
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
+
+      if (snap.exists()) {
+        const data = snap.data();
+        console.log("User doc found:", data);
+
+        // Merge missing info if needed
+        if (!data.address || !data.phoneNumber) {
+          console.log("Merging missing info...");
+          await setDoc(userRef, {
+            address: data.address || "123 Main Street, Konya, Türkiye",
+            phoneNumber: data.phoneNumber || "+90 555 123 4567"
+          }, { merge: true });
+        }
+
+        // Update DOM with Firestore data
+        updateInfoSection(data);
+
+      } else {
+        console.log("Creating new user doc...");
+        const newData = {
+          name: user.displayName || '',
+          email: user.email || '',
+          profilePicture: user.photoURL || '',
+          createdAt: new Date().toISOString(),
+          address: "123 Main Street, Konya, Türkiye",
+          phoneNumber: "+90 555 123 4567"
+        };
+        await setDoc(userRef, newData);
+        updateInfoSection(newData);
+      }
+    } catch (e) {
+      console.error("Failed to save user data:", e);
+    }
   }
 });
 
@@ -74,22 +115,19 @@ if (item) {
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
       console.log('Sign-in successful:', user.displayName || user.email);
-      const db = getFirestore(app);
-      const storage = getStorage(app);
 
-      // Save user profile to Firestore (create or overwrite document at users/{uid})
+      // Save basic profile immediately
       try {
         await setDoc(doc(db, "users", user.uid), {
           name: user.displayName || '',
           email: user.email || '',
           profilePicture: user.photoURL || '',
           createdAt: new Date().toISOString()
-        });
+        }, { merge: true });
         console.log('User data saved to Firestore for uid:', user.uid);
       } catch (e) {
         console.error('Failed to save user data to Firestore:', e);
       }
-
     } catch (err) {
       console.error('Sign-in failed:', err);
       alert('Sign-in failed: ' + (err?.message || err));
@@ -98,9 +136,3 @@ if (item) {
 } else {
   console.error("Sign-in button with id 'sgn-w-google-btn' not found in the DOM.");
 }
-
-
-// Sign-in is handled via the click handler above; no extra automatic call here.
-    
-    
-

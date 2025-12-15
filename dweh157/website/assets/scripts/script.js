@@ -197,7 +197,7 @@ document.addEventListener("keydown", function(e) {
   }
 
   // Trigger only when S key is pressed
-  if (e.code === "KeyS") {
+  if (e.code === "KeyF") {
   inputField.classList.toggle("tog");
   }
 });
