@@ -1,8 +1,10 @@
 // auth.js — Google sign-in using Firebase CDN modules (ES module imports)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } 
+  from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
-import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, getDoc, collection, addDoc } 
+  from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 import { getStorage } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
 
 console.log('auth.js loaded');
@@ -48,7 +50,6 @@ onAuthStateChanged(auth, async (user) => {
   if (user) {
     console.log('User signed in:', user.displayName || user.email);
 
-    // Update username heading
     const heading = document.getElementById('username');
     if (heading) heading.textContent = user.displayName || user.email;
 
@@ -66,7 +67,6 @@ onAuthStateChanged(auth, async (user) => {
       }
     }
 
-    // Firestore user doc
     try {
       const userRef = doc(db, "users", user.uid);
       const snap = await getDoc(userRef);
@@ -75,20 +75,15 @@ onAuthStateChanged(auth, async (user) => {
         const data = snap.data();
         console.log("User doc found:", data);
 
-        // Merge missing info if needed
         if (!data.address || !data.phoneNumber) {
-          console.log("Merging missing info...");
           await setDoc(userRef, {
             address: data.address || "123 Main Street, Konya, Türkiye",
             phoneNumber: data.phoneNumber || "+90 555 123 4567"
           }, { merge: true });
         }
 
-        // Update DOM with Firestore data
         updateInfoSection(data);
-
       } else {
-        console.log("Creating new user doc...");
         const newData = {
           name: user.displayName || '',
           email: user.email || '',
@@ -116,18 +111,24 @@ if (item) {
       const user = result.user;
       console.log('Sign-in successful:', user.displayName || user.email);
 
-      // Save basic profile immediately
-      try {
-        await setDoc(doc(db, "users", user.uid), {
-          name: user.displayName || '',
-          email: user.email || '',
-          profilePicture: user.photoURL || '',
-          createdAt: new Date().toISOString()
-        }, { merge: true });
-        console.log('User data saved to Firestore for uid:', user.uid);
-      } catch (e) {
-        console.error('Failed to save user data to Firestore:', e);
-      }
+      const userRef = doc(db, "users", user.uid);
+      await setDoc(userRef, {
+        name: user.displayName || '',
+        email: user.email || '',
+        profilePicture: user.photoURL || '',
+        createdAt: new Date().toISOString(),
+        address: "",
+        phoneNumber: ""
+      }, { merge: true });
+
+      const ordersRef = collection(userRef, "orders");
+      await addDoc(ordersRef, {
+        product: "Welcome Gift",
+        price: 0,
+        createdAt: new Date().toISOString()
+      });
+
+      console.log("User doc and subcollection created successfully");
     } catch (err) {
       console.error('Sign-in failed:', err);
       alert('Sign-in failed: ' + (err?.message || err));
@@ -137,61 +138,42 @@ if (item) {
   console.error("Sign-in button with id 'sgn-w-google-btn' not found in the DOM.");
 }
 
-
-
-/*/ menu button 1 click /*/
+// Menu buttons
 document.getElementById("my-info-btn").addEventListener("click", () => {
-  // Show page-1
   document.getElementById("page-1").style.display = "block";
-
-  // Hide page-2, page-3, page-4
   document.getElementById("page-2").style.display = "none";
   document.getElementById("page-3").style.display = "none";
   document.getElementById("page-4").style.display = "none";
 });
 
-/*/ menu button 2 click /*/
 document.getElementById("my-address-btn").addEventListener("click", () => {
-  // Show page-2
   document.getElementById("page-2").style.display = "block";
-
-  // Hide page-1, page-3, page-4
   document.getElementById("page-1").style.display = "none";
   document.getElementById("page-3").style.display = "none";
   document.getElementById("page-4").style.display = "none";
 });
 
-/*/ menu button 3 click /*/
 document.getElementById("payment-methods-btn").addEventListener("click", () => {
-  // Show page-3
   document.getElementById("page-3").style.display = "block";
-
-  // Hide page-1, page-2, page-4
   document.getElementById("page-1").style.display = "none";
   document.getElementById("page-2").style.display = "none";
   document.getElementById("page-4").style.display = "none";
 });
 
-/*/ menu button 4 click /*/
 document.getElementById("order-history-btn").addEventListener("click", () => {
-  // Show page-4
   document.getElementById("page-4").style.display = "block";
-
-  // Hide page-1, page-2, page-3
   document.getElementById("page-1").style.display = "none";
   document.getElementById("page-2").style.display = "none";
   document.getElementById("page-3").style.display = "none";
 });
 
-// sign out button
-document.getElementById("sign-out-btn").addEventListener("click", () => {
-  auth.signOut()
-    .then(() => {
-      console.log("User signed out successfully");
-      // Example: redirect to login page
-      window.location.href = "index.html";
-    })
-    .catch((error) => {
-      console.error("Error signing out:", error);
-    });
+// Sign out button (modular signOut)
+document.getElementById("sign-out-btn").addEventListener("click", async () => {
+  try {
+    await signOut(auth);
+    console.log("User signed out successfully");
+    window.location.href = "index.html";
+  } catch (error) {
+    console.error("Error signing out:", error);
+  }
 });
