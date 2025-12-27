@@ -168,6 +168,26 @@ justify-content: center;
   cursor: pointer;
 }
 
+#my-info-btn{
+
+}
+
+#my-address-btn{
+
+}
+
+#payment-methods-btn{
+
+}
+
+#order-history-btn{
+
+}
+
+#sign-out-btn{
+color: redK;
+}
+
 .pages{
 width: calc(100% - 350px);
 height: 100vh;
