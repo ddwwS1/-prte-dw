@@ -136,3 +136,49 @@ if (item) {
 } else {
   console.error("Sign-in button with id 'sgn-w-google-btn' not found in the DOM.");
 }
+
+
+
+/*/ menu button 1 click /*/
+document.getElementById("my-info-btn").addEventListener("click", () => {
+  // Show page-1
+  document.getElementById("page-1").style.display = "block";
+
+  // Hide page-2, page-3, page-4
+  document.getElementById("page-2").style.display = "none";
+  document.getElementById("page-3").style.display = "none";
+  document.getElementById("page-4").style.display = "none";
+});
+
+/*/ menu button 2 click /*/
+document.getElementById("my-address-btn").addEventListener("click", () => {
+  // Show page-2
+  document.getElementById("page-2").style.display = "block";
+
+  // Hide page-1, page-3, page-4
+  document.getElementById("page-1").style.display = "none";
+  document.getElementById("page-3").style.display = "none";
+  document.getElementById("page-4").style.display = "none";
+});
+
+/*/ menu button 3 click /*/
+document.getElementById("payment-methods-btn").addEventListener("click", () => {
+  // Show page-3
+  document.getElementById("page-3").style.display = "block";
+
+  // Hide page-1, page-2, page-4
+  document.getElementById("page-1").style.display = "none";
+  document.getElementById("page-2").style.display = "none";
+  document.getElementById("page-4").style.display = "none";
+});
+
+/*/ menu button 4 click /*/
+document.getElementById("order-history-btn").addEventListener("click", () => {
+  // Show page-4
+  document.getElementById("page-4").style.display = "block";
+
+  // Hide page-1, page-2, page-3
+  document.getElementById("page-1").style.display = "none";
+  document.getElementById("page-2").style.display = "none";
+  document.getElementById("page-3").style.display = "none";
+});
