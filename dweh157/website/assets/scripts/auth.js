@@ -182,3 +182,16 @@ document.getElementById("order-history-btn").addEventListener("click", () => {
   document.getElementById("page-2").style.display = "none";
   document.getElementById("page-3").style.display = "none";
 });
+
+// sign out button
+document.getElementById("sign-out-btn").addEventListener("click", () => {
+  auth.signOut()
+    .then(() => {
+      console.log("User signed out successfully");
+      // Example: redirect to login page
+      window.location.href = "index.html";
+    })
+    .catch((error) => {
+      console.error("Error signing out:", error);
+    });
+});
