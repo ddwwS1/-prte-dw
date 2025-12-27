@@ -94,8 +94,8 @@ onAuthStateChanged(auth, async (user) => {
           email: user.email || '',
           profilePicture: user.photoURL || '',
           createdAt: new Date().toISOString(),
-          address: "123 Main Street, Konya, Türkiye",
-          phoneNumber: "+90 555 123 4567"
+          address: "",
+          phoneNumber: ""
         };
         await setDoc(userRef, newData);
         updateInfoSection(newData);
