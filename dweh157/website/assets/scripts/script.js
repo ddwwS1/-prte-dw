@@ -39,6 +39,29 @@ if (hamMenu && offScreenMenu) {
   });
 }
 
+const item = document.getElementById("profile-button");
+if (item) {
+  item.addEventListener("click", () => {
+    window.location.href = "myaccount.html";
+  });
+}
+
+// Search toggle
+const searchIcon = document.getElementById("mag-card");
+const inputField = document.getElementById("src_bar");
+if (searchIcon && inputField) {
+  searchIcon.addEventListener("click", () => {
+    inputField.classList.toggle("tog");
+  });
+}
+document.addEventListener("keydown", function(e) {
+  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if (e.code === "KeyF") {
+    inputField.classList.toggle("tog");
+  }
+});
+
+
 
 function setCartBadge(count) {
   const shCard = document.getElementById("sh-card");
@@ -149,6 +172,10 @@ function wireCartClicks(userRef) {
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     const userRef = doc(db, "users", user.uid);
+      const heading = document.getElementById("profile-name");
+      const img = document.getElementById("profile-img");
+      if (heading) heading.textContent = user.displayName || user.email;
+      if (img) img.src = user.photoURL
 
     // Render products
     await renderGrid({ containerId: "product-grid", filterType: "featured" });
