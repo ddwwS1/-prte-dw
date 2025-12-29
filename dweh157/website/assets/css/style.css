@@ -173,6 +173,13 @@ body {
   right: -5px;
   cursor: pointer;
 }
+
+/* Hide badge when count is 0 */
+#sh-card[data-count="0"]::after {
+  content: none;       /* removes the text */
+  display: none;       /* hides the badge circle */
+}
+
 #search-icon{
 
 }
