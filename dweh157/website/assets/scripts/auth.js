@@ -1,69 +1,19 @@
-// auth.js — Google sign-in using Firebase CDN modules (ES module imports)
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  onAuthStateChanged,
-  signOut,
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
-import {
-  getFirestore,
-  doc,
-  setDoc,
-  getDoc,
-  collection,
-  addDoc,
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-import { getStorage } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
+// script.js
+import * as firebase from "./firebase.js";
 
-console.log("auth.js loaded");
-
-// Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyDUPV60SGFALV3si5L7qkX2zxl4UTxW6pU",
-  authDomain: "prte-dw.firebaseapp.com",
-  databaseURL: "https://prte-dw-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "prte-dw",
-  storageBucket: "prte-dw.firebasestorage.app",
-  messagingSenderId: "644047694920",
-  appId: "1:644047694920:web:ba31fab647475d55f83c7d",
-  measurementId: "G-MN59W6T8W7",
-};
-
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-try {
-  getAnalytics(app);
-} catch (e) {
-  console.warn("Analytics not available:", e?.message || e);
-}
-
-// Auth setup
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-auth.languageCode = "en";
-
-// Firestore + Storage
-const db = getFirestore(app);
-const storage = getStorage(app);
-
-// Helper: update DOM info section
+/* ==================== Helper: update DOM info section ==================== */
 function updateInfoSection(data) {
   const emailTxt = document.getElementById("email-txt");
   const phoneTxt = document.getElementById("phonenum-txt");
   const addressTxt = document.getElementById("address-txt");
 
   if (emailTxt) emailTxt.textContent = "Gmail : " + (data.email || "none");
-  if (phoneTxt)
-    phoneTxt.textContent = "Phone number : " + (data.phoneNumber || "none");
-  if (addressTxt)
-    addressTxt.textContent = "Address : " + (data.address || "none");
+  if (phoneTxt) phoneTxt.textContent = "Phone number : " + (data.phoneNumber || "none");
+  if (addressTxt) addressTxt.textContent = "Address : " + (data.address || "none");
 }
 
-// Auth state listener
-onAuthStateChanged(auth, async (user) => {
+/* ==================== Auth state listener ==================== */
+firebase.onAuthStateChanged(firebase.auth, async (user) => {
   if (user) {
     console.log("User signed in:", user.displayName || user.email);
 
@@ -85,15 +35,15 @@ onAuthStateChanged(auth, async (user) => {
     }
 
     try {
-      const userRef = doc(db, "users", user.uid);
-      const snap = await getDoc(userRef);
+      const userRef = firebase.doc(firebase.db, "users", user.uid);
+      const snap = await firebase.getDoc(userRef);
 
       if (snap.exists()) {
         const data = snap.data();
         console.log("User doc found:", data);
 
         if (!data.address || !data.phoneNumber) {
-          await setDoc(
+          await firebase.setDoc(
             userRef,
             {
               address: data.address || "123 Main Street, Konya, Türkiye",
@@ -113,7 +63,7 @@ onAuthStateChanged(auth, async (user) => {
           address: "",
           phoneNumber: "",
         };
-        await setDoc(userRef, newData);
+        await firebase.setDoc(userRef, newData);
         updateInfoSection(newData);
       }
     } catch (e) {
@@ -122,19 +72,18 @@ onAuthStateChanged(auth, async (user) => {
   }
 });
 
-// Sign-in button — use popup
-const item = document.getElementById("sgn-w-google-btn");
-if (item) {
-  item.addEventListener("click", async () => {
+/* ==================== Sign-in button ==================== */
+const signInBtn = document.getElementById("sgn-w-google-btn");
+if (signInBtn) {
+  signInBtn.addEventListener("click", async () => {
     try {
       console.log("Attempting sign-in with popup; origin:", location.origin);
-      const result = await signInWithPopup(auth, provider);
+      const result = await firebase.signInWithPopup(firebase.auth, firebase.provider);
       const user = result.user;
       console.log("Sign-in successful:", user.displayName || user.email);
 
-      //user doc
-      const userRef = doc(db, "users", user.uid);
-      await setDoc(
+      const userRef = firebase.doc(firebase.db, "users", user.uid);
+      await firebase.setDoc(
         userRef,
         {
           name: user.displayName || "",
@@ -147,23 +96,23 @@ if (item) {
         { merge: true }
       );
 
-      //settings subcollection
-      const settingsRef = collection(userRef, "settings");
-      await setDoc(doc(settingsRef, "preferences"), {
+      // Settings subcollection
+      const settingsRef = firebase.collection(userRef, "settings");
+      await firebase.setDoc(firebase.doc(settingsRef, "preferences"), {
         theme: "light",
         notifications: true,
       });
 
-      const ordersRef = collection(userRef, "userCart");
-      await addDoc(ordersRef, {
-      createdAt: new Date().toISOString(),
-      items: []
-
+      // Cart subcollection
+      const ordersRef = firebase.collection(userRef, "userCart");
+      await firebase.addDoc(ordersRef, {
+        createdAt: new Date().toISOString(),
+        items: [],
       });
 
       // Payment methods subcollection
-      const payRef = collection(userRef, "paymentMethods");
-      await setDoc(doc(payRef, "default"), {
+      const payRef = firebase.collection(userRef, "paymentMethods");
+      await firebase.setDoc(firebase.doc(payRef, "default"), {
         type: "empty",
         provider: "empty",
         last4: "0000",
@@ -174,67 +123,44 @@ if (item) {
           city: "unknown",
           postalCode: "00000",
           country: "unknown",
-
-       }
+        },
       });
 
-      // order history subcollection
-      const orderhisRef = collection(userRef,"orderhis");
-      await setDoc(doc(orderhisRef, "all"), {
+      // Order history subcollection
+      const orderhisRef = firebase.collection(userRef, "orderhis");
+      await firebase.setDoc(firebase.doc(orderhisRef, "all"), {
         items: [],
         totalAmount: 0,
         orderDate: "unknown",
-       }
-      );
+      });
 
-
-
-
-      console.log("User doc and subcollection created successfully");
+      console.log("User doc and subcollections created successfully");
     } catch (err) {
       console.error("Sign-in failed:", err);
       alert("Sign-in failed: " + (err?.message || err));
     }
   });
 } else {
-  console.error(
-    "Sign-in button with id 'sgn-w-google-btn' not found in the DOM."
-  );
+  console.error("Sign-in button with id 'sgn-w-google-btn' not found in the DOM.");
 }
 
-// Menu buttons
-document.getElementById("my-info-btn").addEventListener("click", () => {
-  document.getElementById("page-1").style.display = "block";
-  document.getElementById("page-2").style.display = "none";
-  document.getElementById("page-3").style.display = "none";
-  document.getElementById("page-4").style.display = "none";
-});
+/* ==================== Menu buttons ==================== */
+function showPage(pageId) {
+  ["page-1", "page-2", "page-3", "page-4"].forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = id === pageId ? "block" : "none";
+  });
+}
 
-document.getElementById("my-address-btn").addEventListener("click", () => {
-  document.getElementById("page-2").style.display = "block";
-  document.getElementById("page-1").style.display = "none";
-  document.getElementById("page-3").style.display = "none";
-  document.getElementById("page-4").style.display = "none";
-});
+document.getElementById("my-info-btn")?.addEventListener("click", () => showPage("page-1"));
+document.getElementById("my-address-btn")?.addEventListener("click", () => showPage("page-2"));
+document.getElementById("payment-methods-btn")?.addEventListener("click", () => showPage("page-3"));
+document.getElementById("order-history-btn")?.addEventListener("click", () => showPage("page-4"));
 
-document.getElementById("payment-methods-btn").addEventListener("click", () => {
-  document.getElementById("page-3").style.display = "block";
-  document.getElementById("page-1").style.display = "none";
-  document.getElementById("page-2").style.display = "none";
-  document.getElementById("page-4").style.display = "none";
-});
-
-document.getElementById("order-history-btn").addEventListener("click", () => {
-  document.getElementById("page-4").style.display = "block";
-  document.getElementById("page-1").style.display = "none";
-  document.getElementById("page-2").style.display = "none";
-  document.getElementById("page-3").style.display = "none";
-});
-
-// Sign out button (modular signOut)
-document.getElementById("sign-out-btn").addEventListener("click", async () => {
+/* ==================== Sign out button ==================== */
+document.getElementById("sign-out-btn")?.addEventListener("click", async () => {
   try {
-    await signOut(auth);
+    await firebase.signOut(firebase.auth);
     console.log("User signed out successfully");
     window.location.href = "index.html";
   } catch (error) {

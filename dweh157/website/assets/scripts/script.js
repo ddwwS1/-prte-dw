@@ -1,33 +1,5 @@
-// ✅ Firebase ES module imports
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  getDocs,
-  query,
-  where,
-  doc,
-  getDoc,
-  setDoc
-} from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
-import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
-
-// ✅ Firebase config
-const firebaseConfig = {
-  apiKey: "AIzaSyDUPV60SGFALV3si5L7qkX2zxl4UTxW6pU",
-  authDomain: "prte-dw.firebaseapp.com",
-  databaseURL: "https://prte-dw-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "prte-dw",
-  storageBucket: "prte-dw.firebasestorage.app",
-  messagingSenderId: "644047694920",
-  appId: "1:644047694920:web:ba31fab647475d55f83c7d",
-  measurementId: "G-MN59W6T8W7"
-};
-
-// ✅ Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
+// script.js
+import * as firebase from "./firebase.js";
 
 /* ==================== DOM helpers ==================== */
 const hamMenu = document.querySelector(".ham-menu");
@@ -54,15 +26,14 @@ if (searchIcon && inputField) {
     inputField.classList.toggle("tog");
   });
 }
-document.addEventListener("keydown", function(e) {
+document.addEventListener("keydown", function (e) {
   if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
   if (e.code === "KeyF") {
     inputField.classList.toggle("tog");
   }
 });
 
-
-
+/* ==================== Cart badge ==================== */
 function setCartBadge(count) {
   const shCard = document.getElementById("sh-card");
   if (shCard) {
@@ -78,21 +49,21 @@ async function addToCart(userRef, productId) {
     console.warn("Add to Cart click without productId.");
     return;
   }
-  const cartItemRef = doc(userRef, "userCart", productId);
-  const snap = await getDoc(cartItemRef);
+  const cartItemRef = firebase.doc(userRef, "userCart", productId);
+  const snap = await firebase.getDoc(cartItemRef);
 
   if (snap.exists()) {
     const currentQty = snap.data().quantity || 0;
-    await setDoc(cartItemRef, { productId, quantity: currentQty + 1 }, { merge: true });
+    await firebase.setDoc(cartItemRef, { productId, quantity: currentQty + 1 }, { merge: true });
   } else {
-    await setDoc(cartItemRef, { productId, quantity: 1 });
+    await firebase.setDoc(cartItemRef, { productId, quantity: 1 });
   }
 }
 
 /* ==================== Badge update ==================== */
 async function updateCartBadge(userRef) {
-  const cartRef = collection(userRef, "userCart");
-  const snapshot = await getDocs(cartRef);
+  const cartRef = firebase.collection(userRef, "userCart");
+  const snapshot = await firebase.getDocs(cartRef);
 
   let totalQty = 0;
   snapshot.forEach((docSnap) => {
@@ -111,8 +82,8 @@ async function renderGrid({ containerId, filterType }) {
   }
   grid.innerHTML = "";
 
-  const q = query(collection(db, "products"), where("type", "==", filterType));
-  const snapshot = await getDocs(q);
+  const q = firebase.query(firebase.collection(firebase.db, "products"), firebase.where("type", "==", filterType));
+  const snapshot = await firebase.getDocs(q);
 
   snapshot.forEach((docSnap) => {
     const { name, price, image } = docSnap.data();
@@ -169,13 +140,13 @@ function wireCartClicks(userRef) {
 }
 
 /* ==================== Auth-driven flow ==================== */
-onAuthStateChanged(auth, async (user) => {
+firebase.onAuthStateChanged(firebase.auth, async (user) => {
   if (user) {
-    const userRef = doc(db, "users", user.uid);
-      const heading = document.getElementById("profile-name");
-      const img = document.getElementById("profile-img");
-      if (heading) heading.textContent = user.displayName || user.email;
-      if (img) img.src = user.photoURL
+    const userRef = firebase.doc(firebase.db, "users", user.uid);
+    const heading = document.getElementById("profile-name");
+    const img = document.getElementById("profile-img");
+    if (heading) heading.textContent = user.displayName || user.email;
+    if (img) img.src = user.photoURL;
 
     // Render products
     await renderGrid({ containerId: "product-grid", filterType: "featured" });
