@@ -38,6 +38,11 @@ function setCartBadge(count) {
   const shCard = document.getElementById("sh-card");
   if (shCard) {
     shCard.setAttribute("data-count", count);
+
+    // Trigger animation
+    shCard.classList.remove("bump"); // reset if already animating
+    void shCard.offsetWidth;         // force reflow to restart animation
+    shCard.classList.add("bump");
   } else {
     console.warn("Missing #sh-card element for badge.");
   }
