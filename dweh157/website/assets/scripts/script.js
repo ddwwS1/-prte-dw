@@ -41,7 +41,7 @@ function setCartBadge(count) {
 
     // Trigger animation
     shCard.classList.remove("bump"); // reset if already animating
-    void shCard.offsetWidth;         // force reflow to restart animation
+    void shCard.offsetWidth; // force reflow to restart animation
     shCard.classList.add("bump");
   } else {
     console.warn("Missing #sh-card element for badge.");
@@ -59,7 +59,11 @@ async function addToCart(userRef, productId) {
 
   if (snap.exists()) {
     const currentQty = snap.data().quantity || 0;
-    await firebase.setDoc(cartItemRef, { productId, quantity: currentQty + 1 }, { merge: true });
+    await firebase.setDoc(
+      cartItemRef,
+      { productId, quantity: currentQty + 1 },
+      { merge: true }
+    );
   } else {
     await firebase.setDoc(cartItemRef, { productId, quantity: 1 });
   }
@@ -87,12 +91,16 @@ async function renderGrid({ containerId, filterType }) {
   }
   grid.innerHTML = "";
 
-  const q = firebase.query(firebase.collection(firebase.db, "products"), firebase.where("type", "==", filterType));
+  const q = firebase.query(
+    firebase.collection(firebase.db, "products"),
+    firebase.where("type", "==", filterType)
+  );
   const snapshot = await firebase.getDocs(q);
 
   snapshot.forEach((docSnap) => {
     const { name, price, image } = docSnap.data();
     const productId = docSnap.id;
+    const displayPrice = (Number(price) / 100).toFixed(2); // convert cents → dollars
 
     const card = document.createElement("div");
     card.classList.add("tap-sensor");
@@ -100,10 +108,11 @@ async function renderGrid({ containerId, filterType }) {
     card.innerHTML = `
       <div class="pr-card">
         <div class="price-box">
-          <p class="price-number">${price}$</p>
+          <p class="price-number">$${displayPrice}</p>
         </div>
         <div class="pr-img-holder"></div>
-        <img class="pr-img" src="${image || 'https://via.placeholder.com/300x300?text=No+Image'}" alt="Product" loading="lazy">
+        <img class="pr-img" src="${image || "https://via.placeholder.com/300x300?text=No+Image"
+      }" alt="Product" loading="lazy">
         <p class="pr-name">${name}</p>
         <div class="add-tint">
           <div class="add-to-cart">
@@ -129,7 +138,7 @@ async function renderGrid({ containerId, filterType }) {
 function wireCartClicks(userRef) {
   const containers = [
     document.getElementById("product-grid"),
-    document.getElementById("product-grid2")
+    document.getElementById("product-grid2"),
   ];
 
   const handler = async (e) => {
@@ -155,7 +164,10 @@ firebase.onAuthStateChanged(firebase.auth, async (user) => {
 
     // Render products
     await renderGrid({ containerId: "product-grid", filterType: "featured" });
-    await renderGrid({ containerId: "product-grid2", filterType: "discounted" });
+    await renderGrid({
+      containerId: "product-grid2",
+      filterType: "discounted",
+    });
 
     // Wire cart clicks after render
     wireCartClicks(userRef);
@@ -165,8 +177,153 @@ firebase.onAuthStateChanged(firebase.auth, async (user) => {
   } else {
     // Not signed in → render only
     await renderGrid({ containerId: "product-grid", filterType: "featured" });
-    await renderGrid({ containerId: "product-grid2", filterType: "discounted" });
+    await renderGrid({
+      containerId: "product-grid2",
+      filterType: "discounted",
+    });
     setCartBadge(0);
     console.warn("Not signed in. Add to Cart requires authentication.");
   }
 });
+
+// enable horizontal scroll for product grids
+function enableHorizontalScroll(containerId) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.addEventListener("wheel", (e) => {
+    e.preventDefault();
+    container.scrollLeft += e.deltaY; // scroll horizontally with vertical wheel
+  });
+}
+
+// Apply to both grids
+enableHorizontalScroll("product-grid");
+enableHorizontalScroll("product-grid2");
+
+// ==================== Cart toggle ====================
+const shCard = document.getElementById("sh-card");
+const cart = document.getElementById("cart");
+const overlay = document.getElementById("overlay");
+const closeBtn = document.getElementById("close-cart");
+
+function toggleCart() {
+  cart.classList.toggle("hidden");
+  overlay.classList.toggle("hidden");
+
+  if (!cart.classList.contains("hidden")) {
+    cart.focus();
+    loadCart(); // load cart contents when opened
+  }
+}
+
+if (shCard) shCard.addEventListener("click", toggleCart);
+if (closeBtn) closeBtn.addEventListener("click", toggleCart);
+
+// ✅ Overlay should always close
+if (overlay)
+  overlay.addEventListener("click", () => {
+    cart.classList.add("hidden");
+    overlay.classList.add("hidden");
+  });
+
+// ==================== Load Cart ====================
+async function loadCart() {
+  const uid = firebase.auth.currentUser?.uid;
+  if (!uid) {
+    console.warn("No user signed in");
+    return;
+  }
+
+  const cartContainer = document.getElementById("cart-items");
+  cartContainer.innerHTML = "";
+  let totalCents = 0;
+
+  const cartSnapshot = await firebase.getDocs(
+    firebase.collection(firebase.db, `users/${uid}/userCart`)
+  );
+
+    // ✅ If cart is empty
+  if (cartSnapshot.empty) {
+    cartContainer.innerHTML = `<p class="empty-cart">Your cart is empty</p>`;
+    document.getElementById("cart-total").textContent = "Total: $0.00";
+    return;
+  }
+
+
+  for (const cartDoc of cartSnapshot.docs) {
+    const { productId, quantity } = cartDoc.data();
+    const productSnap = await firebase.getDoc(
+      firebase.doc(firebase.db, "products", productId)
+    );
+
+    if (productSnap.exists()) {
+      const product = productSnap.data();
+      const priceCents = Number(product.price) || 0;
+      const imgSrc =
+        product.image || "https://via.placeholder.com/150?text=No+Image";
+
+      const itemDiv = document.createElement("div");
+      itemDiv.className = "cart-item";
+      itemDiv.innerHTML = `
+      <div class="cart-item-info">
+      <img src="${imgSrc}" alt="${product.name}">
+      </div>
+      <div class="cart-item-details">
+       <span class="cart-item-name"><strong>${product.name}</strong></span>
+       <span class="cart-item-price">$${(priceCents / 100).toFixed(2)}</span>
+       </div>
+       <div class="cart-controls">
+      <button class="decrease">-</button>
+      <input type="number" value="${quantity}" min="1">
+      <button class="increase">+</button>
+      <button class="remove">Remove</button>
+      </div>
+      `;
+
+      // ✅ attach listeners INSIDE the loop
+      const qtyInput = itemDiv.querySelector("input[type='number']");
+      const increaseBtn = itemDiv.querySelector(".increase");
+      const decreaseBtn = itemDiv.querySelector(".decrease");
+      const removeBtn = itemDiv.querySelector(".remove");
+
+      qtyInput.addEventListener("change", async (e) => {
+        const newQty = parseInt(e.target.value, 10);
+        if (newQty > 0) {
+          await firebase.updateDoc(cartDoc.ref, { quantity: newQty });
+          loadCart();
+        } else {
+          await firebase.deleteDoc(cartDoc.ref);
+          loadCart();
+        }
+      });
+
+      increaseBtn.addEventListener("click", async () => {
+        await firebase.updateDoc(cartDoc.ref, { quantity: quantity + 1 });
+        loadCart();
+      });
+
+      decreaseBtn.addEventListener("click", async () => {
+        if (quantity > 1) {
+          await firebase.updateDoc(cartDoc.ref, { quantity: quantity - 1 });
+        } else {
+          await firebase.deleteDoc(cartDoc.ref);
+        }
+        loadCart();
+      });
+
+      removeBtn.addEventListener("click", async () => {
+        await firebase.deleteDoc(cartDoc.ref);
+        loadCart();
+      });
+
+      cartContainer.appendChild(itemDiv);
+
+      totalCents += priceCents * quantity;
+    }
+  }
+
+  document.getElementById("cart-total").textContent = `Total: $${(
+    totalCents / 100
+  ).toFixed(2)}`;
+}

@@ -26,12 +26,15 @@ import {
   getDocs,
   query,
   where,
+  updateDoc,
+  deleteDoc,
+  onSnapshot,
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
 
 // Storage
 import { getStorage } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-storage.js";
 
-// ✅ Your Firebase config (replace with your own values)
+// ✅ Your Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyDUPV60SGFALV3si5L7qkX2zxl4UTxW6pU",
   authDomain: "prte-dw.firebaseapp.com",
@@ -47,11 +50,28 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
-// Export services for use in other files
+// Export initialized services
 export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
 export const db = getFirestore(app);
 export const storage = getStorage(app);
-export { signInWithPopup, onAuthStateChanged, signOut, doc, setDoc, getDoc, collection, addDoc, getDocs, query, where };
 
-
+// Re‑export everything you might need elsewhere
+export {
+  app,
+  analytics,
+  signInWithPopup,
+  onAuthStateChanged,
+  signOut,
+  doc,
+  setDoc,
+  getDoc,
+  collection,
+  addDoc,
+  getDocs,
+  query,
+  where,
+  updateDoc,
+  deleteDoc,
+  onSnapshot,
+};
