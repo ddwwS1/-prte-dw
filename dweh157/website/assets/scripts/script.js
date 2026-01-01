@@ -84,52 +84,86 @@ async function updateCartBadge(userRef) {
 
 // ==================== Preview overlay ====================
 function attachPreviewListeners(container) {
-  const globalPreview = document.getElementById('global-preview');
+  const globalPreview = document.getElementById("global-preview");
+  if (!globalPreview) return;
 
-  container.querySelectorAll('.pr-card').forEach(card => {
-    let hoverTimer;
+  let activeCard = null;
+  let hoverTimer = null;
 
-    card.addEventListener('mouseenter', () => {
-      hoverTimer = setTimeout(() => {
-        const name = card.querySelector('.pr-name')?.textContent;
-        const img = card.querySelector('.pr-img')?.src;
+  const showPreview = (card) => {
+    const name = card.querySelector(".pr-name")?.textContent || "";
+    const imgEl = card.querySelector(".pr-img");
+    if (!imgEl) return;
 
-        globalPreview.innerHTML = `
-          <h4>Quick Preview</h4>
-          <img src="${img}" alt="${name}" style="max-width:200px;display:block;margin-bottom:8px;">
-          <p>${name}</p>
-          <a href="product.html?id=${card.dataset.id}">View full page</a>
-        `;
+    globalPreview.innerHTML = `
+      <h4>Quick Preview</h4>
+      <img src="${imgEl.src}" alt="${name}" style="max-width:200px;display:block;margin-bottom:8px;">
+      <p>${name}</p>
+      <a href="product.html?id=${card.dataset.id}">View full page</a>
+    `;
 
-        const rect = card.getBoundingClientRect();
-        globalPreview.style.top = rect.bottom + 'px';
-        globalPreview.style.left = rect.left + 'px';
+    const rect = card.getBoundingClientRect();
+    const offset = 6; // small gap to avoid boundary flicker
+    globalPreview.style.top = rect.bottom + offset + "px";
+    globalPreview.style.left = rect.left + "px";
 
-        globalPreview.classList.add('show');
-      }, 600);
-    });
+    const applyColor = () => {
+      try {
+        const color = getDominantColor(imgEl);
+        globalPreview.style.backgroundColor = color;
+      } catch (e) {
+        // If canvas is tainted due to CORS, skip color
+      }
+    };
+    if (imgEl.complete) applyColor();
+    else imgEl.onload = applyColor;
 
+    globalPreview.classList.add("show");
+    card.classList.add("hovering"); // simulate :hover
+    activeCard = card;
+  };
 
-    
-    // ✅ Only hide when leaving both card and preview
-    card.addEventListener('mouseleave', () => {
+  const hidePreview = () => {
+    globalPreview.classList.remove("show");
+    if (activeCard) {
+      activeCard.classList.remove("hovering");
+      activeCard = null;
+    }
+  };
+
+  container.querySelectorAll(".pr-card").forEach((card) => {
+    card.addEventListener("mouseenter", () => {
       clearTimeout(hoverTimer);
-
-      // wait a bit to see if mouse enters preview
-      setTimeout(() => {
-        if (!globalPreview.matches(':hover') && !card.matches(':hover')) {
-          globalPreview.classList.remove('show');
-        }
-      }, 200);
+      hoverTimer = setTimeout(() => showPreview(card), 600);
     });
 
-    // also hide when leaving preview itself
-    globalPreview.addEventListener('mouseleave', () => {
-      globalPreview.classList.remove('show');
+    card.addEventListener("mouseleave", (e) => {
+      clearTimeout(hoverTimer);
+      const to = e.relatedTarget;
+      // If moving into the preview, keep hover
+      if (to && globalPreview.contains(to)) return;
+
+      // Otherwise, if neither card nor preview is under the cursor after a short delay, hide
+      setTimeout(() => {
+        if (!card.matches(":hover") && !globalPreview.matches(":hover")) {
+          if (activeCard === card) hidePreview();
+        }
+      }, 150);
     });
   });
-}
 
+  // Entering the preview keeps the active card hovered
+  globalPreview.addEventListener("mouseenter", () => {
+    // no-op: staying on preview should keep activeCard hovered
+  });
+
+  // Leaving the preview: only hide if not returning to the active card
+  globalPreview.addEventListener("mouseleave", (e) => {
+    const to = e.relatedTarget;
+    if (to && activeCard && activeCard.contains(to)) return; // moved back to card
+    hidePreview();
+  });
+}
 /* ==================== Render products ==================== */
 async function renderGrid({ containerId, filterType }) {
   const grid = document.getElementById(containerId);

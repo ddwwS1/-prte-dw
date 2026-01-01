@@ -278,13 +278,19 @@ cursor: pointer;
   will-change: transform;
   cursor: pointer;
 }
-.pr-card:hover {
+
+.pr-card:hover,
+.pr-card.hovering {
   transform: scale(1.05);
   backdrop-filter: blur(10px) brightness(1.1);
 }
-.pr-card:hover .add-tint {
+
+.pr-card:hover .add-tint,
+.pr-card.hovering .add-tint {
   display: flex;
 }
+
+
 .price-box {
   background-color: rgba(0,0,0,0.2);
   padding: 2px 6px;
@@ -614,4 +620,10 @@ transform: scale(1.05);
   opacity: 1;
   pointer-events: auto;
   transform: translateY(0);
+}
+
+#global-preview {
+  position: fixed; /* or absolute if you prefer within a positioned ancestor */
+  z-index: 999;
+  pointer-events: auto; /* important: allow hover */
 }
