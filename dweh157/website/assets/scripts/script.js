@@ -239,9 +239,12 @@ async function loadCart() {
   cartContainer.innerHTML = "";
   let totalCents = 0;
 
+  
   const cartSnapshot = await firebase.getDocs(
     firebase.collection(firebase.db, `users/${uid}/userCart`)
   );
+
+  
 
     // ✅ If cart is empty
   if (cartSnapshot.empty) {
