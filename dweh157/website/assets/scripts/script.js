@@ -82,6 +82,54 @@ async function updateCartBadge(userRef) {
   setCartBadge(totalQty);
 }
 
+// ==================== Preview overlay ====================
+function attachPreviewListeners(container) {
+  const globalPreview = document.getElementById('global-preview');
+
+  container.querySelectorAll('.pr-card').forEach(card => {
+    let hoverTimer;
+
+    card.addEventListener('mouseenter', () => {
+      hoverTimer = setTimeout(() => {
+        const name = card.querySelector('.pr-name')?.textContent;
+        const img = card.querySelector('.pr-img')?.src;
+
+        globalPreview.innerHTML = `
+          <h4>Quick Preview</h4>
+          <img src="${img}" alt="${name}" style="max-width:200px;display:block;margin-bottom:8px;">
+          <p>${name}</p>
+          <a href="product.html?id=${card.dataset.id}">View full page</a>
+        `;
+
+        const rect = card.getBoundingClientRect();
+        globalPreview.style.top = rect.bottom + 'px';
+        globalPreview.style.left = rect.left + 'px';
+
+        globalPreview.classList.add('show');
+      }, 600);
+    });
+
+
+    
+    // ✅ Only hide when leaving both card and preview
+    card.addEventListener('mouseleave', () => {
+      clearTimeout(hoverTimer);
+
+      // wait a bit to see if mouse enters preview
+      setTimeout(() => {
+        if (!globalPreview.matches(':hover') && !card.matches(':hover')) {
+          globalPreview.classList.remove('show');
+        }
+      }, 200);
+    });
+
+    // also hide when leaving preview itself
+    globalPreview.addEventListener('mouseleave', () => {
+      globalPreview.classList.remove('show');
+    });
+  });
+}
+
 /* ==================== Render products ==================== */
 async function renderGrid({ containerId, filterType }) {
   const grid = document.getElementById(containerId);
@@ -106,21 +154,19 @@ async function renderGrid({ containerId, filterType }) {
     card.classList.add("tap-sensor");
     card.setAttribute("data-id", productId);
     card.innerHTML = `
-      <div class="pr-card">
-        <div class="price-box">
-          <p class="price-number">$${displayPrice}</p>
-        </div>
-        <div class="pr-img-holder"></div>
-        <img class="pr-img" src="${image || "https://via.placeholder.com/300x300?text=No+Image"
-      }" alt="Product" loading="lazy">
-        <p class="pr-name">${name}</p>
-        <div class="add-tint">
-          <div class="add-to-cart">
-            <img class="add-cart-img" src="../images/icons/ic_plus_white.png" alt="Add to cart">
-          </div>
-        </div>
+  <div class="pr-card">
+    <div class="price-box">
+      <p class="price-number">$${displayPrice}</p>
+    </div>
+    <div class="pr-img-holder"></div>
+    <img class="pr-img" src="${image || "https://via.placeholder.com/300x300?text=No+Image"}" alt="Product" loading="lazy">
+    <p class="pr-name">${name}</p>
+    <div class="add-tint">
+      <div class="add-to-cart">
+        <img class="add-cart-img" src="../images/icons/ic_plus_white.png" alt="Add to cart">
       </div>
-    `;
+    </div>
+`;
 
     const holder = card.querySelector(".pr-img-holder");
     const imgTag = card.querySelector(".pr-img");
@@ -128,11 +174,16 @@ async function renderGrid({ containerId, filterType }) {
       holder.style.backgroundImage = `url('${imgTag.src}')`;
       holder.style.backgroundSize = "cover";
       holder.style.backgroundPosition = "center";
+
     }
+    
 
     grid.appendChild(card);
   });
+  attachPreviewListeners(grid);
 }
+
+
 
 /* ==================== Delegated cart clicks ==================== */
 function wireCartClicks(userRef) {
@@ -330,3 +381,4 @@ async function loadCart() {
     totalCents / 100
   ).toFixed(2)}`;
 }
+

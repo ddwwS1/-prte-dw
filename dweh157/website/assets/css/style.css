@@ -456,8 +456,8 @@ cursor: pointer;
   max-width: calc(100% - 40px);
   transform: translateX(0);   /* visible by default */
   opacity: 1;
-  transition: transform 0.3s ease, opacity 0.3s ease
-  box-shadow: 0 30px 50px rgba(0,0,0);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  box-shadow: 0 30px 50px rgba(0,0,0,0.3);
 }
 
 
@@ -585,4 +585,33 @@ transform: scale(1.05);
   color: rgb(182, 182, 182);
   font-size: 18px;
   margin: 20px;
+}
+
+.pr-card {
+  position: relative; /* ensures preview positions relative to card */
+}
+
+.preview-window {
+  position: absolute;
+  top: 100%;           /* appears below the card */
+  left: 0;
+  width: 250px;
+  background: rgba(0,0,0,0.85);
+  color: white;
+  padding: 12px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+
+  /* ✅ force it above everything else */
+  z-index: 9999;
+}
+
+.preview-window.show {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
