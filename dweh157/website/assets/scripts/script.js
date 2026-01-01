@@ -97,8 +97,20 @@ function attachPreviewListeners(container) {
 
     globalPreview.innerHTML = `
       <h4>Quick Preview</h4>
-      <img src="${imgEl.src}" alt="${name}" style="max-width:200px;display:block;margin-bottom:8px;">
-      <p>${name}</p>
+      <div #="pre-img-holder">
+      <img id="pre-img" src="${imgEl.src}" alt="${name}">
+      </div>
+      <!-- Example: 3 out of 5 stars -->
+        <div class="stars">
+          <span class="filled">★</span>
+          <span class="filled">★</span>
+          <span class="filled">★</span>
+          <span>★</span>
+          <span>★</span>
+        </div>
+        <div id="review-count">(23 reviews)</div>
+
+      <p id="pre-title">${name}</p>
       <a href="product.html?id=${card.dataset.id}">View full page</a>
     `;
 
@@ -416,3 +428,33 @@ async function loadCart() {
   ).toFixed(2)}`;
 }
 
+async function checkHeadline() {
+  try {
+    // Path: app-INFO/app-assets/headline/index.html
+    const ref = firebase.doc(
+      firebase.db,
+      "app-INFO",       // collection
+      "app-assets",     // document
+      "headlines",       // subcollection
+      "index.html"      // document
+    );
+
+    const snap = await firebase.getDoc(ref);
+
+    if (snap.exists()) {
+      const data = snap.data();
+      if (data.available === true) {
+        const headlineEl = document.getElementById("headline");
+        const txtEl = document.getElementById("headline-txt");
+        if (headlineEl) headlineEl.style.display = "block";
+        if (txtEl) txtEl.textContent = data.headline || "";
+      }
+    } else {
+      console.warn("No headline document found at that path");
+    }
+  } catch (err) {
+    console.error("Error fetching headline:", err);
+  }
+}
+
+checkHeadline();
