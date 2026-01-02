@@ -96,11 +96,17 @@ function attachPreviewListeners(container) {
     if (!imgEl) return;
 
     globalPreview.innerHTML = `
-      <h4>Quick Preview</h4>
-      <div #="pre-img-holder">
+      <div id="pre-title-holder"> 
+        <h4 id="pre-title">Quick Preview</h4>
+        <h4 id="pre-seller-txt">seller: Dweh157</h4> 
+      </div>
+      <div id="pre-img-holder">
       <img id="pre-img" src="${imgEl.src}" alt="${name}">
+      <div id="pre-img-tint">
+      <img id="pre-next-img" src="../images/icons/ic_next_white.png" alt="nothing for now" ></div>
       </div>
       <!-- Example: 3 out of 5 stars -->
+      <div id="pre-rating">
         <div class="stars">
           <span class="filled">★</span>
           <span class="filled">★</span>
@@ -109,6 +115,7 @@ function attachPreviewListeners(container) {
           <span>★</span>
         </div>
         <div id="review-count">(23 reviews)</div>
+      </div>
 
       <p id="pre-title">${name}</p>
       <a href="product.html?id=${card.dataset.id}">View full page</a>
