@@ -115,6 +115,13 @@ function attachPreviewListeners(container) {
           <span>★</span>
         </div>
         <div id="review-count">(23 reviews)</div>
+        <div id="pre-see-reviews">
+        <h3>all reviews</h3>
+        </div>
+        <div id="pre-add-to-wish">
+        <h3>wishlist</h3>
+        </div>
+
       </div>
 
       <p id="pre-title">${name}</p>
