@@ -757,8 +757,8 @@ transform: scale(1.05);
   font-size: 15px;
   margin-left: auto;
   padding: 5px;
-  background-color: rgba(255, 255, 255, 0.164);
-  border-radius: 15px;
+  background-color: rgba(236, 236, 236, 0.11);
+  border-radius: 10px;
   text-align: center;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -766,4 +766,9 @@ transform: scale(1.05);
 
 #pre-add-to-wish{
   margin-left: 0;
+}
+
+#pre-add-to-wish:hover, #pre-see-reviews:hover {
+  background-color: rgba(255, 255, 255, 0.247);
+
 }

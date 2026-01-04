@@ -7,7 +7,9 @@ const offScreenMenu = document.querySelector(".off-screen-menu");
 if (hamMenu && offScreenMenu) {
   hamMenu.addEventListener("click", () => {
     hamMenu.classList.toggle("active");
-    offScreenMenu.classList.toggle("active");
+    if (offScreenMenu) {
+      offScreenMenu.classList.toggle("active");
+    }
   });
 }
 
