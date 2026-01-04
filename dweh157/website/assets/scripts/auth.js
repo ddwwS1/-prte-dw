@@ -110,6 +110,13 @@ if (signInBtn) {
         items: [],
       });
 
+      // wishlist subcollection
+      const wishRef = firebase.collection(userRef, "userWishs");
+      await firebase.addDoc(wishRef, {
+        createdAt: new Date().toISOString(),
+        items: [],
+      });
+
       // Payment methods subcollection
       const payRef = firebase.collection(userRef, "paymentMethods");
       await firebase.setDoc(firebase.doc(payRef, "default"), {

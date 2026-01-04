@@ -71,6 +71,34 @@ async function addToCart(userRef, productId) {
   }
 }
 
+/* ==================== Add to Wish ==================== */
+async function addToWishs(userRef, productId) {
+  if (!productId) {
+    console.warn("Add to Wish click without productId.");
+    return;
+  }
+
+  // userRef is a DocumentReference; pass it directly to collection()
+  const wishCollectionRef = firebase.collection(userRef, "userWishs");
+  const wishItemRef = firebase.doc(wishCollectionRef, productId);
+
+  try {
+    const snap = await firebase.getDoc(wishItemRef);
+
+    if (!snap.exists()) {
+      // Just store productId (no quantity)
+      await firebase.setDoc(wishItemRef, {
+        productId,
+        addedAt: firebase.serverTimestamp() // optional timestamp
+      });
+    } else {
+      console.info("Product already in wishlist.");
+    }
+  } catch (err) {
+    console.error("Failed to add to wishlist:", err);
+  }
+}
+
 /* ==================== Badge update ==================== */
 async function updateCartBadge(userRef) {
   const cartRef = firebase.collection(userRef, "userCart");
@@ -85,8 +113,7 @@ async function updateCartBadge(userRef) {
 }
 
 // ==================== Preview overlay ====================
-
-function attachPreviewListeners(container) {
+function attachPreviewListeners(container, userRef) {
   const globalPreview = document.getElementById("global-preview");
   if (!globalPreview) return;
 
@@ -100,26 +127,22 @@ function attachPreviewListeners(container) {
       product?.gallery ??
       product?.photos;
 
-    // If already an array
     if (Array.isArray(raw)) {
       return raw.filter((u) => typeof u === "string" && u.length);
     }
-    // If a single string URL
     if (typeof raw === "string" && raw.length) {
       return [raw];
     }
-    // If object with numeric keys or values (rare but possible)
     if (raw && typeof raw === "object") {
       const vals = Object.values(raw).filter((u) => typeof u === "string" && u.length);
       if (vals.length) return vals;
     }
-    // Fallback to the card image
     return [fallback];
   };
 
   const showPreview = async (card) => {
     const rect = card.getBoundingClientRect();
-    const offset = 6; // or whatever spacing you want
+    const offset = 6;
     const name = card.querySelector(".pr-name")?.textContent || "";
     const imgEl = card.querySelector(".pr-img");
     if (!imgEl) return;
@@ -142,7 +165,6 @@ function attachPreviewListeners(container) {
       console.error("Firestore fetch failed:", err);
     }
 
-    // Build a safe images[] array
     const images = normalizeImages(product, imgEl.src);
     let currentIndex = 0;
 
@@ -151,7 +173,7 @@ function attachPreviewListeners(container) {
         <h4 id="pre-title">Quick Preview</h4>
         <h4 id="pre-seller-txt">seller: ${product?.seller || "Unknown"}</h4> 
       </div>
-      <div id="pre-img-holder">
+      <div id="pre-img-holder">s
         <img id="pre-img" src="${images[0]}" alt="${name}">
         <div id="pre-img-tint" ${images.length > 1 ? "" : 'style="display:none;"'}>
           <img id="pre-next-img" src="../images/icons/ic_next_white.png" alt="next">
@@ -174,21 +196,28 @@ function attachPreviewListeners(container) {
       <a href="product.html?id=${productId}">View full page</a>
     `;
 
-   const previewWidth = globalPreview.offsetWidth;
-   const cardCenter = rect.left + rect.width / 2;
-   globalPreview.style.left = cardCenter - previewWidth / 2 + "px";
-   globalPreview.style.top = rect.bottom + offset + "px";
+    const previewWidth = globalPreview.offsetWidth;
+    const cardCenter = rect.left + rect.width / 2;
+    globalPreview.style.left = cardCenter - previewWidth / 2 + "px";
+    globalPreview.style.top = rect.bottom + offset + "px";
 
     const preImg = globalPreview.querySelector("#pre-img");
     const preImgTint = globalPreview.querySelector("#pre-img-tint");
 
-    // Cycle only if multiple images
     if (images.length > 1 && preImgTint) {
       preImgTint.addEventListener("click", () => {
         currentIndex = (currentIndex + 1) % images.length;
         preImg.src = images[currentIndex];
       });
     }
+
+const wishBtn = globalPreview.querySelector("#pre-add-to-wish");
+if (wishBtn) {
+  wishBtn.addEventListener("click", async (e) => {
+    e.stopPropagation();
+    await addToWishs(userRef, productId); // ✅ corrected function name
+  });
+}
 
     const applyColor = () => {
       try {
@@ -219,7 +248,7 @@ function attachPreviewListeners(container) {
       clearTimeout(hoverTimer);
       hoverTimer = setTimeout(() => {
         showPreview(card);
-      }, 1000);
+      }, 750);
     });
 
     card.addEventListener("mouseleave", (e) => {
@@ -242,7 +271,7 @@ function attachPreviewListeners(container) {
   });
 }
 /* ==================== Render products ==================== */
-async function renderGrid({ containerId, filterType }) {
+async function renderGrid({ containerId, filterType, userRef }) {
   const grid = document.getElementById(containerId);
   if (!grid) {
     console.error(`Missing #${containerId}`);
@@ -293,7 +322,7 @@ async function renderGrid({ containerId, filterType }) {
     grid.appendChild(card);
   });
 
-  attachPreviewListeners(grid);
+  attachPreviewListeners(grid, userRef);
 }
 
 
@@ -327,10 +356,11 @@ firebase.onAuthStateChanged(firebase.auth, async (user) => {
     if (img) img.src = user.photoURL;
 
     // Render products
-    await renderGrid({ containerId: "product-grid", filterType: "featured" });
+    await renderGrid({ containerId: "product-grid", filterType: "featured", userRef });
     await renderGrid({
       containerId: "product-grid2",
       filterType: "discounted",
+      userRef,
     });
 
     // Wire cart clicks after render
@@ -340,10 +370,11 @@ firebase.onAuthStateChanged(firebase.auth, async (user) => {
     await updateCartBadge(userRef);
   } else {
     // Not signed in → render only
-    await renderGrid({ containerId: "product-grid", filterType: "featured" });
+    await renderGrid({ containerId: "product-grid", filterType: "featured", userRef: null });
     await renderGrid({
       containerId: "product-grid2",
       filterType: "discounted",
+      userRef: null,
     });
     setCartBadge(0);
     console.warn("Not signed in. Add to Cart requires authentication.");

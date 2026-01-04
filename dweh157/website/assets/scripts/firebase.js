@@ -12,6 +12,8 @@ import {
   signOut,
 } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-auth.js";
 
+import { serverTimestamp } from 'https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js';
+
 // Analytics
 import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
 
@@ -74,4 +76,5 @@ export {
   updateDoc,
   deleteDoc,
   onSnapshot,
+  serverTimestamp,
 };
