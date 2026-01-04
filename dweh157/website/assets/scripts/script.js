@@ -118,6 +118,8 @@ function attachPreviewListeners(container) {
   };
 
   const showPreview = async (card) => {
+    const rect = card.getBoundingClientRect();
+    const offset = 6; // or whatever spacing you want
     const name = card.querySelector(".pr-name")?.textContent || "";
     const imgEl = card.querySelector(".pr-img");
     if (!imgEl) return;
@@ -172,10 +174,10 @@ function attachPreviewListeners(container) {
       <a href="product.html?id=${productId}">View full page</a>
     `;
 
-    const rect = card.getBoundingClientRect();
-    const offset = 6;
-    globalPreview.style.top = rect.bottom + offset + "px";
-    globalPreview.style.left = rect.left + "px";
+   const previewWidth = globalPreview.offsetWidth;
+   const cardCenter = rect.left + rect.width / 2;
+   globalPreview.style.left = cardCenter - previewWidth / 2 + "px";
+   globalPreview.style.top = rect.bottom + offset + "px";
 
     const preImg = globalPreview.querySelector("#pre-img");
     const preImgTint = globalPreview.querySelector("#pre-img-tint");
@@ -217,7 +219,7 @@ function attachPreviewListeners(container) {
       clearTimeout(hoverTimer);
       hoverTimer = setTimeout(() => {
         showPreview(card);
-      }, 600);
+      }, 1000);
     });
 
     card.addEventListener("mouseleave", (e) => {

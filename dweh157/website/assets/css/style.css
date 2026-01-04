@@ -674,10 +674,6 @@ transform: scale(1.05);
 }
 
 
-
-
-
-
 .preview-window.show {
   opacity: 1;
   pointer-events: auto;
