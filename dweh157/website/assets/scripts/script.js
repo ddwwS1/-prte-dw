@@ -212,7 +212,7 @@ function attachPreviewListeners(container) {
     }
   };
 
-  container.querySelectorAll(".pr-card").forEach((card) => {
+  container.querySelectorAll(".tap-sensor").forEach((card) => {
     card.addEventListener("mouseenter", () => {
       clearTimeout(hoverTimer);
       hoverTimer = setTimeout(() => {
@@ -259,22 +259,26 @@ async function renderGrid({ containerId, filterType }) {
     const productId = docSnap.id;
     const displayPrice = (Number(price) / 100).toFixed(2); // convert cents → dollars
 
-  const card = document.createElement("div");
-card.classList.add("pr-card"); // not tap-sensor
-card.setAttribute("data-id", productId);
-card.innerHTML = `
-  <div class="price-box">
-    <p class="price-number">$${displayPrice}</p>
-  </div>
-  <div class="pr-img-holder"></div>
-  <img class="pr-img" src="${image || "https://via.placeholder.com/300x300?text=No+Image"}" alt="Product" loading="lazy">
-  <p class="pr-name">${name}</p>
-  <div class="add-tint">
-    <div class="add-to-cart">
-      <img class="add-cart-img" src="../images/icons/ic_plus_white.png" alt="Add to cart">
-    </div>
-  </div>
-`;
+    // ✅ Outer wrapper with tap-sensor and data-id
+    const card = document.createElement("div");
+    card.classList.add("tap-sensor");
+    card.setAttribute("data-id", productId);
+
+    card.innerHTML = `
+      <div class="pr-card">
+        <div class="price-box">
+          <p class="price-number">$${displayPrice}</p>
+        </div>
+        <div class="pr-img-holder"></div>
+        <img class="pr-img" src="${image || "https://via.placeholder.com/300x300?text=No+Image"}" alt="Product" loading="lazy">
+        <p class="pr-name">${name}</p>
+        <div class="add-tint">
+          <div class="add-to-cart">
+            <img class="add-cart-img" src="../images/icons/ic_plus_white.png" alt="Add to cart">
+          </div>
+        </div>
+      </div>
+    `;
 
     const holder = card.querySelector(".pr-img-holder");
     const imgTag = card.querySelector(".pr-img");
@@ -282,12 +286,11 @@ card.innerHTML = `
       holder.style.backgroundImage = `url('${imgTag.src}')`;
       holder.style.backgroundSize = "cover";
       holder.style.backgroundPosition = "center";
-
     }
-    
 
     grid.appendChild(card);
   });
+
   attachPreviewListeners(grid);
 }
 
