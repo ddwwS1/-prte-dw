@@ -85,6 +85,7 @@ async function updateCartBadge(userRef) {
 }
 
 // ==================== Preview overlay ====================
+
 function attachPreviewListeners(container) {
   const globalPreview = document.getElementById("global-preview");
   if (!globalPreview) return;
@@ -92,22 +93,68 @@ function attachPreviewListeners(container) {
   let activeCard = null;
   let hoverTimer = null;
 
-  const showPreview = (card) => {
+  const normalizeImages = (product, fallback) => {
+    const raw =
+      product?.images ??
+      product?.image ??
+      product?.gallery ??
+      product?.photos;
+
+    // If already an array
+    if (Array.isArray(raw)) {
+      return raw.filter((u) => typeof u === "string" && u.length);
+    }
+    // If a single string URL
+    if (typeof raw === "string" && raw.length) {
+      return [raw];
+    }
+    // If object with numeric keys or values (rare but possible)
+    if (raw && typeof raw === "object") {
+      const vals = Object.values(raw).filter((u) => typeof u === "string" && u.length);
+      if (vals.length) return vals;
+    }
+    // Fallback to the card image
+    return [fallback];
+  };
+
+  const showPreview = async (card) => {
     const name = card.querySelector(".pr-name")?.textContent || "";
     const imgEl = card.querySelector(".pr-img");
     if (!imgEl) return;
 
+    const productId = card.dataset.id;
+    if (!productId) {
+      console.warn("Preview: missing data-id on card, skipping.");
+      return;
+    }
+
+    let product = null;
+    try {
+      const snap = await firebase.getDoc(
+        firebase.doc(firebase.db, "products", productId)
+      );
+      if (snap.exists()) {
+        product = snap.data();
+      }
+    } catch (err) {
+      console.error("Firestore fetch failed:", err);
+    }
+
+    // Build a safe images[] array
+    const images = normalizeImages(product, imgEl.src);
+    let currentIndex = 0;
+
     globalPreview.innerHTML = `
       <div id="pre-title-holder"> 
         <h4 id="pre-title">Quick Preview</h4>
-        <h4 id="pre-seller-txt">seller: Dweh157</h4> 
+        <h4 id="pre-seller-txt">seller: ${product?.seller || "Unknown"}</h4> 
       </div>
       <div id="pre-img-holder">
-      <img id="pre-img" src="${imgEl.src}" alt="${name}">
-      <div id="pre-img-tint">
-      <img id="pre-next-img" src="../images/icons/ic_next_white.png" alt="nothing for now" ></div>
+        <img id="pre-img" src="${images[0]}" alt="${name}">
+        <div id="pre-img-tint" ${images.length > 1 ? "" : 'style="display:none;"'}>
+          <img id="pre-next-img" src="../images/icons/ic_next_white.png" alt="next">
+        </div>
       </div>
-      <!-- Example: 3 out of 5 stars -->
       <div id="pre-rating">
         <div class="stars">
           <span class="filled">★</span>
@@ -117,37 +164,43 @@ function attachPreviewListeners(container) {
           <span>★</span>
         </div>
         <div id="review-count">(23 reviews)</div>
-        <div id="pre-see-reviews">
-        <h3>all reviews</h3>
-        </div>
-        <div id="pre-add-to-wish">
-        <h3>wishlist</h3>
-        </div>
-
+        <div id="pre-see-reviews"><h3>all reviews</h3></div>
+        <div id="pre-add-to-wish"><h3>wishlist</h3></div>
       </div>
 
       <p id="pre-title">${name}</p>
-      <a href="product.html?id=${card.dataset.id}">View full page</a>
+      <a href="product.html?id=${productId}">View full page</a>
     `;
 
     const rect = card.getBoundingClientRect();
-    const offset = 6; // small gap to avoid boundary flicker
+    const offset = 6;
     globalPreview.style.top = rect.bottom + offset + "px";
     globalPreview.style.left = rect.left + "px";
 
+    const preImg = globalPreview.querySelector("#pre-img");
+    const preImgTint = globalPreview.querySelector("#pre-img-tint");
+
+    // Cycle only if multiple images
+    if (images.length > 1 && preImgTint) {
+      preImgTint.addEventListener("click", () => {
+        currentIndex = (currentIndex + 1) % images.length;
+        preImg.src = images[currentIndex];
+      });
+    }
+
     const applyColor = () => {
       try {
-        const color = getDominantColor(imgEl);
+        const color = getDominantColor(preImg);
         globalPreview.style.backgroundColor = color;
-      } catch (e) {
-        // If canvas is tainted due to CORS, skip color
+      } catch {
+        // Likely CORS taint; skip
       }
     };
-    if (imgEl.complete) applyColor();
-    else imgEl.onload = applyColor;
+    if (preImg.complete) applyColor();
+    else preImg.onload = applyColor;
 
     globalPreview.classList.add("show");
-    card.classList.add("hovering"); // simulate :hover
+    card.classList.add("hovering");
     activeCard = card;
   };
 
@@ -162,16 +215,16 @@ function attachPreviewListeners(container) {
   container.querySelectorAll(".pr-card").forEach((card) => {
     card.addEventListener("mouseenter", () => {
       clearTimeout(hoverTimer);
-      hoverTimer = setTimeout(() => showPreview(card), 600);
+      hoverTimer = setTimeout(() => {
+        showPreview(card);
+      }, 600);
     });
 
     card.addEventListener("mouseleave", (e) => {
       clearTimeout(hoverTimer);
       const to = e.relatedTarget;
-      // If moving into the preview, keep hover
       if (to && globalPreview.contains(to)) return;
 
-      // Otherwise, if neither card nor preview is under the cursor after a short delay, hide
       setTimeout(() => {
         if (!card.matches(":hover") && !globalPreview.matches(":hover")) {
           if (activeCard === card) hidePreview();
@@ -180,15 +233,9 @@ function attachPreviewListeners(container) {
     });
   });
 
-  // Entering the preview keeps the active card hovered
-  globalPreview.addEventListener("mouseenter", () => {
-    // no-op: staying on preview should keep activeCard hovered
-  });
-
-  // Leaving the preview: only hide if not returning to the active card
   globalPreview.addEventListener("mouseleave", (e) => {
     const to = e.relatedTarget;
-    if (to && activeCard && activeCard.contains(to)) return; // moved back to card
+    if (to && activeCard && activeCard.contains(to)) return;
     hidePreview();
   });
 }
@@ -212,22 +259,21 @@ async function renderGrid({ containerId, filterType }) {
     const productId = docSnap.id;
     const displayPrice = (Number(price) / 100).toFixed(2); // convert cents → dollars
 
-    const card = document.createElement("div");
-    card.classList.add("tap-sensor");
-    card.setAttribute("data-id", productId);
-    card.innerHTML = `
-  <div class="pr-card">
-    <div class="price-box">
-      <p class="price-number">$${displayPrice}</p>
+  const card = document.createElement("div");
+card.classList.add("pr-card"); // not tap-sensor
+card.setAttribute("data-id", productId);
+card.innerHTML = `
+  <div class="price-box">
+    <p class="price-number">$${displayPrice}</p>
+  </div>
+  <div class="pr-img-holder"></div>
+  <img class="pr-img" src="${image || "https://via.placeholder.com/300x300?text=No+Image"}" alt="Product" loading="lazy">
+  <p class="pr-name">${name}</p>
+  <div class="add-tint">
+    <div class="add-to-cart">
+      <img class="add-cart-img" src="../images/icons/ic_plus_white.png" alt="Add to cart">
     </div>
-    <div class="pr-img-holder"></div>
-    <img class="pr-img" src="${image || "https://via.placeholder.com/300x300?text=No+Image"}" alt="Product" loading="lazy">
-    <p class="pr-name">${name}</p>
-    <div class="add-tint">
-      <div class="add-to-cart">
-        <img class="add-cart-img" src="../images/icons/ic_plus_white.png" alt="Add to cart">
-      </div>
-    </div>
+  </div>
 `;
 
     const holder = card.querySelector(".pr-img-holder");
