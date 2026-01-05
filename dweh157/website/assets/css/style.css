@@ -99,6 +99,22 @@ nav {
 /* ====== General ====== */
 li { color: white; }
 
+/* ====== Star Ratings ====== */
+.stars {
+  color: #ccc; /* Default gray for unfilled stars */
+  font-size: 1.2em;
+}
+
+.stars .filled {
+  color: gold; /* Gold color for filled stars */
+}
+
+#review-count {
+color: #0000009a;
+font-size: 15px;
+margin-left: 5px;
+}
+
 * {
   margin: 0;
   padding: 0;

@@ -35,6 +35,25 @@
 
   <!-- Reviews Container -->
   <main>
+    <!-- Review Post Section -->
+    <div id="review-post-section" style="display: none;">
+      <div class="review-post-card">
+        <h3>Write a Review</h3>
+        <div class="star-rating">
+          <span class="star" data-value="1">☆</span>
+          <span class="star" data-value="2">☆</span>
+          <span class="star" data-value="3">☆</span>
+          <span class="star" data-value="4">☆</span>
+          <span class="star" data-value="5">☆</span>
+        </div>
+        <textarea id="review-text" placeholder="Share your thoughts about this product..." rows="4"></textarea>
+        <button id="post-review-btn" class="post-btn">
+          <img src="../images/icons/ic_next_white.png" alt="Post" class="post-icon">
+          Post Review
+        </button>
+      </div>
+    </div>
+
     <div id="reviews-container">
       <!-- Reviews will be injected here dynamically -->
     </div>

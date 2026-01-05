@@ -1,0 +1,277 @@
+/* Reviews Page Styles */
+
+/* Fonts */
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Momo+Signature&family=Quicksand:wght@300..700&family=Caesar+Dressing&display=swap");
+
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Caveat", cursive;
+  font-weight: 700;
+}
+
+body {
+body {
+  background-color: #404040;
+  color: white;
+  margin: 0;
+  padding: 0;
+  background: linear-gradient(90deg, #3d3d3d, #a0a0a0, #3d3d3d);
+  background-size: 180% 180%;
+  animation: gradient-animation 18s ease infinite;
+}
+
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+#menu_bar {
+  height: 50px;
+  padding: 10px;
+  background-color: rgba(0,0,0,0.4);
+  backdrop-filter: blur(20px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 0 20px rgba(0,0,0,0.8);
+}
+
+#menu_bar h1 {
+  margin: 0;
+  font-family: "Caesar Dressing", system-ui;
+  font-size: 2em;
+  color: white;
+}
+
+nav {
+  display: flex;
+  gap: 20px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+nav a:hover, nav a.active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+#headline {
+  text-align: center;
+  padding: 20px;
+}
+
+#headline-txt {
+  font-size: 2em;
+  margin: 0;
+  color: white;
+  -webkit-text-stroke: 1px black;
+  text-shadow: 3px 3px 6px black;
+}
+
+main {
+  padding: 20px;
+}
+
+#reviews-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.review-card {
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.review-card h3 {
+  margin-top: 0;
+  font-size: 1.5em;
+}
+
+.stars {
+  color: gold;
+  font-size: 1.2em;
+}
+
+.review-card p {
+  margin: 10px 0;
+}
+
+.review-card small {
+  color: #ccc;
+}
+
+/* Review Post Section */
+#review-post-section {
+  margin-bottom: 30px;
+}
+
+.review-post-card {
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(20px);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.review-post-card h3 {
+  margin-top: 0;
+  font-size: 1.5em;
+  color: white;
+}
+
+.star-rating {
+  display: flex;
+  gap: 5px;
+  margin: 10px 0;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+.star {
+  color: #ccc;
+  transition: color 0.2s;
+}
+
+.star.selected,
+.star:hover {
+  color: gold;
+}
+
+#review-text {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-family: inherit;
+  resize: vertical;
+  margin: 10px 0;
+}
+
+#review-text::placeholder {
+  color: #ccc;
+}
+
+.post-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  background-color: rgba(0, 123, 255, 0.8);
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.post-btn:hover {
+  background-color: rgba(0, 123, 255, 1);
+}
+
+.post-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Review Display */
+.review-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.username {
+  font-weight: bold;
+  color: white;
+}
+
+.timestamp {
+  font-size: 0.8em;
+  color: #ccc;
+}
+
+.review-actions {
+  position: relative;
+}
+
+.extend-icon {
+  cursor: pointer;
+  font-size: 1.5em;
+  color: #ccc;
+  transition: color 0.2s;
+}
+
+.extend-icon:hover {
+  color: white;
+}
+
+.review-actions-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-radius: 5px;
+  padding: 5px;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+}
+
+.review-actions-menu.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+.review-text {
+  margin: 10px 0;
+  line-height: 1.5;
+}

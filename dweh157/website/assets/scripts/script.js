@@ -20,6 +20,20 @@ if (item) {
   });
 }
 
+const homeBtn = document.getElementById("home-button");
+if (homeBtn) {
+  homeBtn.addEventListener("click", () => {
+    window.location.href = "index.html";
+  });
+}
+
+const reviewsBtn = document.getElementById("reviews-button");
+if (reviewsBtn) {
+  reviewsBtn.addEventListener("click", () => {
+    window.location.href = "reviews.html";
+  });
+}
+
 // Search toggle
 const searchIcon = document.getElementById("mag-card");
 const inputField = document.getElementById("src_bar");
@@ -189,6 +203,24 @@ function attachPreviewListeners(container, userRef) {
       console.error("Firestore fetch failed:", err);
     }
 
+    // Load product reviews for rating and count
+    let averageRating = 0;
+    let reviewCount = 0;
+    try {
+      const reviewsSnap = await firebase.getDocs(firebase.collection(firebase.db, 'products', productId, 'product-reviews'));
+      if (!reviewsSnap.empty) {
+        let totalStars = 0;
+        reviewCount = reviewsSnap.size;
+        reviewsSnap.forEach((doc) => {
+          const review = doc.data();
+          totalStars += review.stars || 0;
+        });
+        averageRating = reviewCount > 0 ? Math.round(totalStars / reviewCount) : 0;
+      }
+    } catch (err) {
+      console.error("Failed to load reviews:", err);
+    }
+
     const images = normalizeImages(product, imgEl.src);
     let currentIndex = 0;
 
@@ -205,13 +237,13 @@ function attachPreviewListeners(container, userRef) {
       </div>
       <div id="pre-rating">
         <div class="stars">
-          <span class="filled">★</span>
-          <span class="filled">★</span>
-          <span class="filled">★</span>
-          <span>★</span>
-          <span>★</span>
+          <span class="${averageRating >= 1 ? 'filled' : ''}">★</span>
+          <span class="${averageRating >= 2 ? 'filled' : ''}">★</span>
+          <span class="${averageRating >= 3 ? 'filled' : ''}">★</span>
+          <span class="${averageRating >= 4 ? 'filled' : ''}">★</span>
+          <span class="${averageRating >= 5 ? 'filled' : ''}">★</span>
         </div>
-        <div id="review-count">(23 reviews)</div>
+        <div id="review-count">(${reviewCount})</div>
         <div id="pre-see-reviews"><h3>all reviews</h3></div>
         <div id="pre-add-to-wish"><h3>wishlist</h3></div>
       </div>
@@ -230,10 +262,32 @@ function attachPreviewListeners(container, userRef) {
 
     if (images.length > 1 && preImgTint) {
       preImgTint.addEventListener("click", () => {
-        currentIndex = (currentIndex + 1) % images.length;
-        preImg.src = images[currentIndex];
+        // Smooth image transition with load detection
+        preImg.style.opacity = '0';
+        setTimeout(() => {
+          currentIndex = (currentIndex + 1) % images.length;
+          const newSrc = images[currentIndex];
+
+          // Create a new image to preload
+          const tempImg = new Image();
+          tempImg.onload = () => {
+            // Image loaded successfully, now fade in
+            preImg.src = newSrc;
+            preImg.style.opacity = '1';
+          };
+          tempImg.src = newSrc;
+        }, 150);
       });
     }
+
+    const seeReviewsBtn = globalPreview.querySelector("#pre-see-reviews");
+if (seeReviewsBtn) {
+  seeReviewsBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    // Navigate to reviews.html with productId
+    window.location.href = `reviews.html?id=${productId}`;
+  });
+}
 
 const wishBtn = globalPreview.querySelector("#pre-add-to-wish");
 if (wishBtn) {

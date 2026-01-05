@@ -58,7 +58,7 @@ firebase.onAuthStateChanged(firebase.auth, async (user) => {
         const newData = {
           name: user.displayName || "",
           email: user.email || "",
-          profilePicture: user.photoURL || "",
+          image: user.photoURL || "",
           createdAt: new Date().toISOString(),
           address: "",
           phoneNumber: "",
@@ -88,7 +88,7 @@ if (signInBtn) {
         {
           name: user.displayName || "",
           email: user.email || "",
-          profilePicture: user.photoURL || "",
+          image: user.photoURL || "",
           createdAt: new Date().toISOString(),
           address: "",
           phoneNumber: "",
