@@ -166,8 +166,6 @@ window.toggleReviewActions = function(reviewId) {
 };
 
 window.deleteReview = async function(reviewId) {
-  if (!confirm('Are you sure you want to delete this review?')) return;
-
   try {
     await firebase.deleteDoc(firebase.doc(firebase.db, 'products', productId, 'product-reviews', reviewId));
     loadReviews();
