@@ -99,6 +99,30 @@ async function addToWishs(userRef, productId) {
   }
 }
 
+/* ==================== Remove from Wish ==================== */
+async function removeFromWishs(userRef, productId) {
+  if (!productId) {
+    console.warn("Remove from Wish click without productId.");
+    return;
+  }
+
+  const wishCollectionRef = firebase.collection(userRef, "userWishs");
+  const wishItemRef = firebase.doc(wishCollectionRef, productId);
+
+  try {
+    const snap = await firebase.getDoc(wishItemRef);
+
+    if (snap.exists()) {
+      await firebase.deleteDoc(wishItemRef);
+      console.info("Product removed from wishlist.");
+    } else {
+      console.info("Product not found in wishlist.");
+    }
+  } catch (err) {
+    console.error("Failed to remove from wishlist:", err);
+  }
+}
+
 /* ==================== Badge update ==================== */
 async function updateCartBadge(userRef) {
   const cartRef = firebase.collection(userRef, "userCart");
@@ -173,7 +197,7 @@ function attachPreviewListeners(container, userRef) {
         <h4 id="pre-title">Quick Preview</h4>
         <h4 id="pre-seller-txt">seller: ${product?.seller || "Unknown"}</h4> 
       </div>
-      <div id="pre-img-holder">s
+      <div id="pre-img-holder">
         <img id="pre-img" src="${images[0]}" alt="${name}">
         <div id="pre-img-tint" ${images.length > 1 ? "" : 'style="display:none;"'}>
           <img id="pre-next-img" src="../images/icons/ic_next_white.png" alt="next">
@@ -213,10 +237,35 @@ function attachPreviewListeners(container, userRef) {
 
 const wishBtn = globalPreview.querySelector("#pre-add-to-wish");
 if (wishBtn) {
-  wishBtn.addEventListener("click", async (e) => {
-    e.stopPropagation();
-    await addToWishs(userRef, productId); // ✅ corrected function name
-  });
+  try {
+    const wishCollectionRef = firebase.collection(userRef, "userWishs");
+    const wishItemRef = firebase.doc(wishCollectionRef, productId);
+    const snap = await firebase.getDoc(wishItemRef);
+
+    if (snap.exists()) {
+      // Product already in wishlist → show "unlist"
+      wishBtn.textContent = "unlist";
+      wishBtn.style.color = "red"; // light red
+      wishBtn.style.fontSize = "15px"
+    }
+
+    wishBtn.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      if (snap.exists()) {
+        await removeFromWishs(userRef, productId);
+        wishBtn.textContent = "wishlist";
+        wishBtn.style.color = ""; // reset
+        wishBtn.style.fontSize = "15px"
+      } else {
+        await addToWishs(userRef, productId);
+        wishBtn.textContent = "unlist";
+        wishBtn.style.color = "red";
+        wishBtn.style.fontSize = "15px"
+      }
+    });
+  } catch (err) {
+    console.error("Failed to check wishlist:", err);
+  }
 }
 
     const applyColor = () => {
