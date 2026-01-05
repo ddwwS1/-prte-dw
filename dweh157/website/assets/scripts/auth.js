@@ -114,7 +114,7 @@ if (signInBtn) {
       const wishRef = firebase.collection(userRef, "userWishs");
       await firebase.addDoc(wishRef, {
         createdAt: new Date().toISOString(),
-        items:eq [],
+        items: [],
       });
 
       // Payment methods subcollection
