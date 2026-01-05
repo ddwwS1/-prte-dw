@@ -554,73 +554,77 @@ async function loadCart() {
 
   for (const cartDoc of cartSnapshot.docs) {
     const { productId, quantity } = cartDoc.data();
-    const productSnap = await firebase.getDoc(
-      firebase.doc(firebase.db, "products", productId)
-    );
+    try {
+      const productSnap = await firebase.getDoc(
+        firebase.doc(firebase.db, "products", productId)
+      );
 
-    if (productSnap.exists()) {
-      const product = productSnap.data();
-      const priceCents = Number(product.price) || 0;
-      const imgSrc =
-        product.image || "https://via.placeholder.com/150?text=No+Image";
+      if (productSnap.exists()) {
+        const product = productSnap.data();
+        const priceCents = Number(product.price) || 0;
+        const imgSrc =
+          product.image || "https://via.placeholder.com/150?text=No+Image";
 
-      const itemDiv = document.createElement("div");
-      itemDiv.className = "cart-item";
-      itemDiv.innerHTML = `
-      <div class="cart-item-info">
-      <img src="${imgSrc}" alt="${product.name}">
-      </div>
-      <div class="cart-item-details">
-       <span class="cart-item-name"><strong>${product.name}</strong></span>
-       <span class="cart-item-price">$${(priceCents / 100).toFixed(2)}</span>
-       </div>
-       <div class="cart-controls">
-      <button class="decrease">-</button>
-      <input type="number" value="${quantity}" min="1">
-      <button class="increase">+</button>
-      <button class="remove">Remove</button>
-      </div>
-      `;
+        const itemDiv = document.createElement("div");
+        itemDiv.className = "cart-item";
+        itemDiv.innerHTML = `
+        <div class="cart-item-info">
+        <img src="${imgSrc}" alt="${product.name}">
+        </div>
+        <div class="cart-item-details">
+         <span class="cart-item-name"><strong>${product.name}</strong></span>
+         <span class="cart-item-price">$${(priceCents / 100).toFixed(2)}</span>
+         </div>
+         <div class="cart-controls">
+        <button class="decrease">-</button>
+        <input type="number" value="${quantity}" min="1">
+        <button class="increase">+</button>
+        <button class="remove">Remove</button>
+        </div>
+        `;
 
-      // ✅ attach listeners INSIDE the loop
-      const qtyInput = itemDiv.querySelector("input[type='number']");
-      const increaseBtn = itemDiv.querySelector(".increase");
-      const decreaseBtn = itemDiv.querySelector(".decrease");
-      const removeBtn = itemDiv.querySelector(".remove");
+        // ✅ attach listeners INSIDE the loop
+        const qtyInput = itemDiv.querySelector("input[type='number']");
+        const increaseBtn = itemDiv.querySelector(".increase");
+        const decreaseBtn = itemDiv.querySelector(".decrease");
+        const removeBtn = itemDiv.querySelector(".remove");
 
-      qtyInput.addEventListener("change", async (e) => {
-        const newQty = parseInt(e.target.value, 10);
-        if (newQty > 0) {
-          await firebase.updateDoc(cartDoc.ref, { quantity: newQty });
+        qtyInput.addEventListener("change", async (e) => {
+          const newQty = parseInt(e.target.value, 10);
+          if (newQty > 0) {
+            await firebase.updateDoc(cartDoc.ref, { quantity: newQty });
+            loadCart();
+          } else {
+            await firebase.deleteDoc(cartDoc.ref);
+            loadCart();
+          }
+        });
+
+        increaseBtn.addEventListener("click", async () => {
+          await firebase.updateDoc(cartDoc.ref, { quantity: quantity + 1 });
           loadCart();
-        } else {
+        });
+
+        decreaseBtn.addEventListener("click", async () => {
+          if (quantity > 1) {
+            await firebase.updateDoc(cartDoc.ref, { quantity: quantity - 1 });
+          } else {
+            await firebase.deleteDoc(cartDoc.ref);
+          }
+          loadCart();
+        });
+
+        removeBtn.addEventListener("click", async () => {
           await firebase.deleteDoc(cartDoc.ref);
           loadCart();
-        }
-      });
+        });
 
-      increaseBtn.addEventListener("click", async () => {
-        await firebase.updateDoc(cartDoc.ref, { quantity: quantity + 1 });
-        loadCart();
-      });
+        cartContainer.appendChild(itemDiv);
 
-      decreaseBtn.addEventListener("click", async () => {
-        if (quantity > 1) {
-          await firebase.updateDoc(cartDoc.ref, { quantity: quantity - 1 });
-        } else {
-          await firebase.deleteDoc(cartDoc.ref);
-        }
-        loadCart();
-      });
-
-      removeBtn.addEventListener("click", async () => {
-        await firebase.deleteDoc(cartDoc.ref);
-        loadCart();
-      });
-
-      cartContainer.appendChild(itemDiv);
-
-      totalCents += priceCents * quantity;
+        totalCents += priceCents * quantity;
+      }
+    } catch (err) {
+      console.error("Failed to load product", productId, err);
     }
   }
 
