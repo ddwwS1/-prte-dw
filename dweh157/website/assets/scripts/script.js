@@ -20,6 +20,13 @@ if (item) {
   });
 }
 
+const profileCard = document.getElementById("profile-card");
+if (profileCard) {
+  profileCard.addEventListener("click", () => {
+    window.location.href = "myaccount.html";
+  });
+}
+
 const homeBtn = document.getElementById("home-button");
 if (homeBtn) {
   homeBtn.addEventListener("click", () => {

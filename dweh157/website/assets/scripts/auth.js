@@ -53,7 +53,66 @@ firebase.onAuthStateChanged(firebase.auth, async (user) => {
           );
         }
 
+        console.log("User doc data:", data);
         updateInfoSection(data);
+
+        // Adjust positions when signed in
+        const profileCard = document.getElementById("profile-card");
+        const shCard = document.getElementById("sh-card");
+        const magCard = document.getElementById("mag-card");
+        if (profileCard) profileCard.style.display = "block";
+        if (shCard) shCard.style.right = "75px";
+        if (magCard) magCard.style.right = "135px";
+
+        // Load and display profile image with dynamic outline
+        const profileImgMenu = document.getElementById("profile-img-menu");
+        if (profileImgMenu) {
+          console.log("Setting profile img src to:", data.image);
+          
+          // Function to apply outline based on image average color
+          const applyOutline = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = profileImgMenu.naturalWidth;
+            canvas.height = profileImgMenu.naturalHeight;
+            try {
+              ctx.drawImage(profileImgMenu, 0, 0);
+              const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              const imgData = imageData.data; // RGBA pixel data
+              let r = 0, g = 0, b = 0, count = 0;
+              // Sum RGB values from all pixels
+              for (let i = 0; i < imgData.length; i += 4) {
+                r += imgData[i];     // Red
+                g += imgData[i + 1]; // Green
+                b += imgData[i + 2]; // Blue
+                count++;
+              }
+              // Calculate average color
+              r = Math.floor(r / count);
+              g = Math.floor(g / count);
+              b = Math.floor(b / count);
+              console.log(`Outline color: rgb(${r}, ${g}, ${b})`);
+              // Apply semi-transparent outline using average color
+              if (profileCard) profileCard.style.boxShadow = `0 0 0 3px rgba(${r}, ${g}, ${b}, 0.7)`;
+            } catch (e) {
+              console.log('CORS or other error extracting color, using default outline');
+              // Fallback to semi-transparent black outline
+              if (profileCard) profileCard.style.boxShadow = '0 0 0 3px rgba(0, 0, 0, 0.7)';
+            }
+          };
+
+          // Set cross-origin for external images and load src
+          profileImgMenu.crossOrigin = 'anonymous';
+          profileImgMenu.src = data.image || "../images/icons/ic_user_white.png";
+          profileImgMenu.style.display = "block";
+
+          // Apply outline immediately if image is cached, else on load
+          if (profileImgMenu.complete) {
+            applyOutline();
+          } else {
+            profileImgMenu.onload = applyOutline;
+          }
+        }
       } else {
         const newData = {
           name: user.displayName || "",
@@ -69,6 +128,23 @@ firebase.onAuthStateChanged(firebase.auth, async (user) => {
     } catch (e) {
       console.error("Failed to save user data:", e);
     }
+  } else {
+    // User signed out: hide profile and reset positions and outline
+    const profileImgMenu = document.getElementById("profile-img-menu");
+    if (profileImgMenu) {
+      profileImgMenu.style.display = "none";
+    }
+
+    // Adjust positions when signed out
+    const profileCard = document.getElementById("profile-card");
+    const shCard = document.getElementById("sh-card");
+    const magCard = document.getElementById("mag-card");
+    if (profileCard) {
+      profileCard.style.display = "none";
+      profileCard.style.boxShadow = "none"; // Remove outline
+    }
+    if (shCard) shCard.style.right = "15px";
+    if (magCard) magCard.style.right = "75px";
   }
 });
 
