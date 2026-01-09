@@ -1,6 +1,10 @@
 // script.js
 import * as firebase from "./firebase.js";
 
+/*===================== GLOBAL STYLE ==================== */
+// Select all elements
+document.getElementById("menu_bar").classList.add("neumorphic");
+
 /* ==================== DOM helpers ==================== */
 const hamMenu = document.querySelector(".ham-menu");
 const offScreenMenu = document.querySelector(".off-screen-menu");
@@ -239,7 +243,7 @@ function attachPreviewListeners(container, userRef) {
       <div id="pre-img-holder">
         <img id="pre-img" src="${images[0]}" alt="${name}">
         <div id="pre-img-tint" ${images.length > 1 ? "" : 'style="display:none;"'}>
-          <img id="pre-next-img" src="../images/icons/ic_next_white.png" alt="next">
+          <img id="pre-next-img" src="../images/icons/ic_next_white.svg" alt="next">
         </div>
       </div>
       <div id="pre-rating">
@@ -415,7 +419,7 @@ async function renderGrid({ containerId, filterType, userRef }) {
         <p class="pr-name">${name}</p>
         <div class="add-tint">
           <div class="add-to-cart">
-            <img class="add-cart-img" src="../images/icons/ic_plus_white.png" alt="Add to cart">
+            <img class="add-cart-img" src="../images/icons/ic_plus_white.svg" alt="Add to cart">
           </div>
         </div>
       </div>
