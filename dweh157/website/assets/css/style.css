@@ -3,7 +3,7 @@
 /* ====== Global styles ====== */
 .neumorphic {
   border: none;
-  border-radius: 12px;
+  border-radius: 20px;
   background: #e0e0e0;
   box-shadow: 
     8px 8px 16px #bebebe,   /* Dark shadow */
@@ -183,22 +183,25 @@ body {
   stroke: rgb(71, 71, 71); /* if the SVG uses strokes */
 }
 
-#shopping_cart, #sh-card, #mag-card, #search_icon {
+#shopping_cart, #sh-card, #sh-card-container, #mag-card, #search_icon {
   width: 45px;
   height: 45px;
 }
-#sh-card {
+#sh-card-container {
+  align-items: center;
+  justify-content: center;
   position: absolute;
   right: 75px;
   z-index: 5;
   cursor: pointer;
 }
-#sh-card::after {
+#sh-card-container::after {
   content: attr(data-count);
   position: absolute;
   width: 20px;
   height: 20px;
   background-color: red;
+  box-shadow: 0 0 20px 3px rgba(255, 0, 0, 0.7); /* Red glow */
   border-radius: 50%;
   color: white;
   display: flex;
@@ -211,7 +214,7 @@ body {
 }
 
 /* Hide badge when count is 0 */
-#sh-card[data-count="0"]::after {
+#sh-card-container[data-count="0"]::after {
   content: none;       /* removes the text */
   display: none;       /* hides the badge circle */
 }
@@ -485,12 +488,12 @@ cursor: pointer;
 }
 
 
-#sh-card::after[data-count] {
+#sh-card-container::after[data-count] {
   transition: transform 0.3s ease;
 }
 
 
-#sh-card.bump::after {
+#sh-card-container.bump::after {
   animation: bump 0.8s cubic-bezier(0.25, 0.1, 0.25, 1); /* smoother easing */
 }
 

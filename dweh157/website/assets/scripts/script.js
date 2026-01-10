@@ -60,9 +60,151 @@ document.addEventListener("keydown", function (e) {
   }
 });
 
+/* ==================== Auth state listener ==================== */
+firebase.onAuthStateChanged(firebase.auth, async (user) => {
+  if (user) {
+    console.log("User signed in:", user.displayName || user.email);
+
+    const heading = document.getElementById("username");
+    if (heading) heading.textContent = user.displayName || user.email;
+
+    const googlebtntxt = document.getElementById("sgn-w-google-txt");
+    if (googlebtntxt) googlebtntxt.textContent = "Change Google Account";
+
+    const profilePicHolder = document.getElementById("profile-pic-holder");
+    const profilePic = document.getElementById("profile-pic");
+    if (profilePicHolder && profilePic) {
+      if (user.photoURL) {
+        profilePic.style.backgroundImage = `url(${user.photoURL})`;
+        profilePicHolder.style.display = "block";
+      } else {
+        profilePicHolder.style.display = "none";
+      }
+    }
+
+    try {
+      const userRef = firebase.doc(firebase.db, "users", user.uid);
+      const snap = await firebase.getDoc(userRef);
+
+      if (snap.exists()) {
+        const data = snap.data();
+        console.log("User doc found:", data);
+
+        if (!data.address || !data.phoneNumber) {
+          await firebase.setDoc(
+            userRef,
+            {
+              address: data.address || "123 Main Street, Konya, Türkiye",
+              phoneNumber: data.phoneNumber || "+90 555 123 4567",
+            },
+            { merge: true }
+          );
+        }
+
+        console.log("User doc data:", data);
+        updateInfoSection(data);
+
+function updateInfoSection(userData) {
+  // Example: update DOM elements with user info
+  const nameEl = document.getElementById("info-name");
+  const emailEl = document.getElementById("info-email");
+  const addressEl = document.getElementById("info-address");
+  const phoneEl = document.getElementById("info-phone");
+
+  if (nameEl) nameEl.textContent = userData.name || "";
+  if (emailEl) emailEl.textContent = userData.email || "";
+  if (addressEl) addressEl.textContent = userData.address || "";
+  if (phoneEl) phoneEl.textContent = userData.phoneNumber || "";
+}
+
+        // Load and display profile image with dynamic outline
+        const profileImgMenu = document.getElementById("profile-img-menu");
+        if (profileImgMenu) {
+          console.log("Setting profile img src to:", data.image);
+          
+          // Function to apply outline based on image average color
+          const applyOutline = () => {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = profileImgMenu.naturalWidth;
+            canvas.height = profileImgMenu.naturalHeight;
+            try {
+              ctx.drawImage(profileImgMenu, 0, 0);
+              const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              const imgData = imageData.data; // RGBA pixel data
+              let r = 0, g = 0, b = 0, count = 0;
+              // Sum RGB values from all pixels
+              for (let i = 0; i < imgData.length; i += 4) {
+                r += imgData[i];     // Red
+                g += imgData[i + 1]; // Green
+                b += imgData[i + 2]; // Blue
+                count++;
+              }
+              // Calculate average color
+              r = Math.floor(r / count);
+              g = Math.floor(g / count);
+              b = Math.floor(b / count);
+              console.log(`Outline color: rgb(${r}, ${g}, ${b})`);
+              // Apply semi-transparent outline using average color
+              if (profileCard) profileCard.style.boxShadow = `0 0 20px 3px rgba(${r}, ${g}, ${b}, 0.7)`;
+            } catch (e) {
+              console.log('CORS or other error extracting color, using default outline');
+              // Fallback to semi-transparent black outline
+              if (profileCard) profileCard.style.boxShadow = '0 0 20px 3px rgba(0, 0, 0, 0.7)';
+            }
+          };
+
+          // Set cross-origin for external images and load src
+          profileImgMenu.crossOrigin = 'anonymous';
+          profileImgMenu.src = data.image || "../images/icons/ic_user_white.png";
+          profileImgMenu.style.display = "block";
+
+          // Apply outline immediately if image is cached, else on load
+          if (profileImgMenu.complete) {
+            applyOutline();
+          } else {
+            profileImgMenu.onload = applyOutline;
+          }
+        }
+      } else {
+        const newData = {
+          name: user.displayName || "",
+          email: user.email || "",
+          image: user.photoURL || "",
+          createdAt: new Date().toISOString(),
+          address: "",
+          phoneNumber: "",
+        };
+        await firebase.setDoc(userRef, newData);
+        updateInfoSection(newData);
+      }
+    } catch (e) {
+      console.error("Failed to save user data:", e);
+    }
+  } else {
+    // User signed out: hide profile and reset positions and outline
+    const profileImgMenu = document.getElementById("profile-img-menu");
+    if (profileImgMenu) {
+      profileImgMenu.style.display = "none";
+    }
+
+    // Adjust positions when signed out
+    const profileCard = document.getElementById("profile-card");
+    const shCard = document.getElementById("sh-card-container");
+    const magCard = document.getElementById("mag-card");
+    if (profileCard) {
+      profileCard.style.display = "none";
+      profileCard.style.boxShadow = "none"; // Remove outline
+    }
+    if (shCard) shCard.style.right = "15px";
+    if (magCard) magCard.style.right = "75px";
+  }
+});
+
+
 /* ==================== Cart badge ==================== */
 function setCartBadge(count) {
-  const shCard = document.getElementById("sh-card");
+  const shCard = document.getElementById("sh-card-container");
   if (shCard) {
     shCard.setAttribute("data-count", count);
 
@@ -71,7 +213,7 @@ function setCartBadge(count) {
     void shCard.offsetWidth; // force reflow to restart animation
     shCard.classList.add("bump");
   } else {
-    console.warn("Missing #sh-card element for badge.");
+    console.warn("Missing #sh-card-container element for badge.");
   }
 }
 
