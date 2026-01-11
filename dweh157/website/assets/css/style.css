@@ -10,7 +10,6 @@
     -8px -8px 16px #ffffff; /* Light shadow */
   padding: 20px 40px;
   font-size: 16px;
-  cursor: pointer;
 }
 
 /* ====== Off-screen menu ====== */
@@ -40,9 +39,16 @@ nav {
   width: 50px;
   margin-left: auto;
   position: relative;
+  transition: transform 0.25s ease;
+  will-change: transform;
   cursor: pointer;
   z-index: 10;
 }
+
+.ham-menu:hover {
+  transform: scale(1.10);
+}
+
 .ham-menu span {
   height: 7px;
   width: 100%;
@@ -165,6 +171,7 @@ body {
   100% {
     background-position: 0% 50%;
   }}
+
 /* ====== Menu bar ====== */
 #menu_bar {
   height: 50px;
@@ -193,8 +200,15 @@ body {
   position: absolute;
   right: 75px;
   z-index: 5;
+  transition: transform 0.25s ease;
+  will-change: transform;
   cursor: pointer;
 }
+
+#sh-card-container:hover {
+  transform: scale(1.10);
+}
+
 #sh-card-container::after {
   content: attr(data-count);
   position: absolute;
@@ -210,7 +224,13 @@ body {
   font-size: 13px;
   top: -8px;
   right: -5px;
+  transition: transform 0.25s ease;
+  will-change: transform;
   cursor: pointer;
+}
+
+#sh-card-container:hover::after {
+  transform: scale(1.20);
 }
 
 /* Hide badge when count is 0 */
@@ -226,7 +246,13 @@ body {
 #mag-card {
 right: 135px; 
 position: absolute;
+transition: transform 0.25s ease;
+will-change: transform;
 cursor: pointer;
+}
+
+#mag-card:hover {
+  transform: scale(1.10);
 }
 
 #profile-card {
@@ -235,9 +261,15 @@ cursor: pointer;
   position: absolute;
   right: 15px;
   z-index: 5;
-  cursor: pointer;
   border-radius: 50%;
   overflow: hidden;
+  transition: transform 0.25s ease;
+  will-change: transform;
+  cursor: pointer;
+}
+
+#profile-card:hover {
+    transform: scale(1.10);
 }
 
 #profile-img-menu {
@@ -301,17 +333,21 @@ cursor: pointer;
 /* ====== Main grid ====== */
 .main-grid {
   display: grid;
+  border-radius: 50px;
+
+
+  margin: 20px;
   grid-auto-flow: column;
   grid-auto-columns: 350px;
   gap: 15px;
-  width: auto;
   max-height: 100%;
   overflow-x: auto;
-  padding: 20px;
+  padding: 30px;
   scrollbar-width: none;
   -ms-overflow-style: none;
   overscroll-behavior: contain; /* avoid parent stealing scroll */
 }
+
 .main-grid::-webkit-scrollbar { display: none; }
 
 #product-grid {
@@ -325,7 +361,7 @@ cursor: pointer;
   height: 300px;
   width: 350px;
   background-color: rgba(0, 0, 0, 0.350);
-  border-radius: 20px;
+  border-radius: 50px;
   box-shadow: 0 2px 15px rgba(0,0,0,0.5);
   overflow: hidden;
   backdrop-filter: blur(6px);
@@ -751,6 +787,7 @@ transform: scale(1.05);
   position: fixed; /* or absolute if you prefer within a positioned ancestor */
   z-index: 999;
   pointer-events: auto; /* important: allow hover */
+  border-radius: 50px;
 }
 
 #headline {
