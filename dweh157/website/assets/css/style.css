@@ -387,7 +387,7 @@ cursor: pointer;
   padding: 2px 6px;
   border-radius: 15px;
   position: absolute;
-  right: 10px;
+  right: 20px;
   top: 10px;
   opacity: 0.8;
 }
@@ -398,10 +398,14 @@ cursor: pointer;
 .pr-name {
   width: 100%;
   color: white;
+  white-space: nowrap;     /* Prevents text from wrapping */
+  overflow: hidden;        /* Hides overflowing text */
+  text-overflow: ellipsis; /* Adds "..." if text is too long */
   padding: 5px;
   position: absolute;
-  bottom: 0;
-  font-size: 22px;
+  left: 20px;
+  bottom: 5px;
+  font-size: 24px;
   -webkit-text-stroke: 1px black;
   text-shadow: 1px 1px 5px white;
 }
@@ -412,7 +416,7 @@ cursor: pointer;
   border-radius: 10px;
   position: absolute;
   bottom: 10px;
-  right: 10px;
+  right: 20px;
   display: none;
   justify-content: center;
   align-items: center;
@@ -795,10 +799,16 @@ transform: scale(1.05);
   align-items: center;
   gap: 10px;
   padding: 8px 12px;
-  background: #ffffff8f;
-  color: #fff;
-  border-top: 1px solid #222;
-  border-bottom: 1px solid #222;
+  margin-top: 65px;
+  margin-left: 50px;
+  margin-right: 50px;
+  background: #e0e0e0;
+  box-shadow: 
+    8px 8px 16px #bebebe,   /* Dark shadow */
+    -8px -8px 16px #ffffff; /* Light shadow */
+  border-radius: 18px;
+  border-left: 5px solid rgb(71, 71, 71);
+  border-right: 5px solid rgb(71, 71, 71);
   font-smooth: always;
   display: none;
 }
@@ -813,7 +823,7 @@ transform: scale(1.05);
 }
 
 #headline-txt {
-  color: #000;
+  color: rgb(71, 71, 71);
   display: inline-block;
   padding-left: 100%;
   white-space: nowrap;
