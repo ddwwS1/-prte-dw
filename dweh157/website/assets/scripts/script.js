@@ -804,8 +804,10 @@ async function checkHeadline() {
       if (data.available === true) {
         const headlineEl = document.getElementById("headline");
         const txtEl = document.getElementById("headline-txt");
+        const featuredEl = document.getElementById("featured");
         if (headlineEl) headlineEl.style.display = "block";
         if (txtEl) txtEl.textContent = data.headline || "";
+        if (featuredEl) featuredEl.style.marginTop = "10px";
       }
     } else {
       console.warn("No headline document found at that path");
