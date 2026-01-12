@@ -591,7 +591,7 @@ function wireCartClicks(userRef) {
   ];
 
   const handler = async (e) => {
-    const addBtn = e.target.closest(".add-to-cart");
+    const addBtn = e.target.closest(".add-tint");
     if (!addBtn) return;
     const card = e.target.closest(".tap-sensor");
     const productId = card?.dataset?.id;

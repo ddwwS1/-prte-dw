@@ -1,5 +1,6 @@
 /* ====== Fonts (single import, no duplicates) ====== */
 @import url("https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Momo+Signature&family=Quicksand:wght@300..700&family=Caesar+Dressing&display=swap");
+
 /* ====== Global styles ====== */
 .neumorphic {
   border: none;
@@ -153,14 +154,12 @@ body {
   height: 100vh;
   background-size: cover;
   background-position: center;
-  background-size: cover;
-  background-position: center;
   background-image: url(../images/backgrounds/ink-stroke-wallpaper.png);
   background: linear-gradient(900deg, #ffffff38, #ffffff, #3b3b3b);
   background-size: 180% 180%;
   animation: gradient-animation 18s ease infinite;
-
 }
+
   @keyframes gradient-animation {
   0% {
     background-position: 0% 50%;
@@ -362,7 +361,9 @@ cursor: pointer;
   width: 350px;
   background-color: rgba(0, 0, 0, 0.350);
   border-radius: 50px;
-  box-shadow: 0 2px 15px rgba(0,0,0,0.5);
+  box-shadow: 
+    8px 8px 16px #bebebe,   /* Dark shadow */
+    -8px -8px 16px #ffffff; /* Light shadow */
   overflow: hidden;
   backdrop-filter: blur(6px);
   transition: transform 0.25s ease;

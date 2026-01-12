@@ -3,6 +3,17 @@
 /* Fonts */
 @import url("https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Momo+Signature&family=Quicksand:wght@300..700&family=Caesar+Dressing&display=swap");
 
+/* ====== Global styles ====== */
+.neumorphic {
+  border: none;
+  border-radius: 20px;
+  background: #e0e0e0;
+  box-shadow: 
+    8px 8px 16px #bebebe,   /* Dark shadow */
+    -8px -8px 16px #ffffff; /* Light shadow */
+  padding: 20px 40px;
+  font-size: 16px;
+}
 
 * {
   margin: 0;
@@ -13,11 +24,21 @@
 
 
 body {
-  background-color: #404040;
-  color: white;
-  margin: 0;
-  padding: 0;
-  background: linear-gradient(90deg, #3d3d3d, #a0a0a0, #3d3d3d);
+  height: 100vh;
+  width: 100vw;
+  background-color: rgb(64,64,64);
+  overflow-x: hidden;
+}
+
+#background {
+  width: 100%;
+  min-height: 100%;
+
+  position: absolute;
+  background-size: cover;
+  background-position: center;
+  background-image: url(../images/backgrounds/ink-stroke-wallpaper.png);
+  background: linear-gradient(900deg, #ffffff38, #ffffff, #3b3b3b);
   background-size: 180% 180%;
   animation: gradient-animation 18s ease infinite;
 }
@@ -29,21 +50,31 @@ body {
 }
 
 #menu_bar {
+  position: relative;
   height: 50px;
   padding: 10px;
-  background-color: rgba(0,0,0,0.4);
-  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  margin: 30px;
+  margin-top: 0;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 0 20px rgba(0,0,0,0.8);
+  background: #e0e0e0;
+  box-shadow: 
+    8px 8px 16px #bebebe,   /* Dark shadow */
+    -8px -8px 16px #ffffff; /* Light shadow */
+  margin: 30px;
+}
+
+p {
+  color: rgb(71,71,71);
 }
 
 #menu_bar h1 {
   margin: 0;
   font-family: "Caesar Dressing", system-ui;
   font-size: 2em;
-  color: white;
+  color: rgb(71, 71, 71);
 }
 
 nav {
@@ -52,7 +83,7 @@ nav {
 }
 
 nav a {
-  color: white;
+  color: rgb(71, 71, 71);
   text-decoration: none;
   padding: 5px 10px;
   border-radius: 25px;
@@ -71,13 +102,11 @@ nav a:hover, nav a.active {
 #headline-txt {
   font-size: 2em;
   margin: 0;
-  color: white;
-  -webkit-text-stroke: 1px black;
-  text-shadow: 3px 3px 6px black;
+  color: rgb(71, 71, 71);
 }
 
 main {
-  padding: 20px;
+  padding: 30px;
 }
 
 #reviews-container {
@@ -87,11 +116,12 @@ main {
 }
 
 .review-card {
-  background-color: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(20px);
+  background: #e0e0e0;
+  box-shadow: 
+    8px 8px 16px #bebebe,   /* Dark shadow */
+    -8px -8px 16px #ffffff; /* Light shadow */
   padding: 20px;
-  border-radius: 35px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  border-radius: 50px;
 }
 
 .review-card h3 {
@@ -100,16 +130,17 @@ main {
 }
 
 .stars {
-  color: gold;
+  color: rgb(197, 168, 0);
   font-size: 1.2em;
 }
 
 .review-card p {
   margin: 10px 0;
+  color: rgb(71, 71, 71);
 }
 
 .review-card small {
-  color: #ccc;
+  color: rgb(71, 71, 71)
 }
 
 /* Review Post Section */
@@ -118,17 +149,19 @@ main {
 }
 
 .review-post-card {
-  background-color: rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(20px);
-  padding: 20px;
-  border-radius: 35px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  background: #e0e0e0;
+  box-shadow: 
+    8px 8px 16px #bebebe,   /* Dark shadow */
+    -8px -8px 16px #ffffff; /* Light shadow */
+  padding: 30px;
+  border-radius: 50px;
+
 }
 
 .review-post-card h3 {
   margin-top: 0;
   font-size: 1.5em;
-  color: white;
+  color: rgb(71, 71, 71);
 }
 
 .star-rating {
@@ -140,46 +173,65 @@ main {
 }
 
 .star {
-  color: #ccc;
+  color: rgb(71, 71, 71);
   transition: color 0.2s;
 }
 
 .star.selected,
 .star:hover {
-  color: gold;
+  color: rgb(197, 168, 0);
 }
 
 #review-text {
-  width: calc(100% - 20px);
-  padding: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 25px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: white;
+  width: calc(100% - 50px);
+  border: none;
+  outline: none;
+  border-radius: 50px;
+  padding: 1.2em;
+  background-color: #e1e2e3;
+  box-shadow: inset 2px 5px 10px rgba(0, 0, 0, 0.3);
+  transition: 300ms ease-in-out;
+  position: relative;
+  margin-top: 10px;
+  font-size: 20px;
   font-family: inherit;
   resize: vertical;
   margin: 10px 0;
 }
 
+#review-text:focus {
+  background-color: #ffffff;
+  transform: scale(1.01);
+  box-shadow: 13px 13px 100px #969696, -13px -13px 100px #ffffff;
+}
+
 #review-text::placeholder {
-  color: #ccc;
+  color:rgb(71, 71, 71)
 }
 
 .post-btn {
-  display: flex;
+  justify-content: center;
   align-items: center;
-  gap: 8px;
-  padding: 10px 15px;
-  background-color: rgba(0, 123, 255, 0.8);
-  color: white;
-  border: none;
-  border-radius: 25px;
+  text-align: center;
+  margin-left: 5px;
+  background-color: #e0e0e0;
+  border-radius: 50px;
+  box-shadow: inset 4px 4px 10px #bcbcbc, inset -4px -4px 10px #ffffff;
+  color: rgb(71, 71, 71);
   cursor: pointer;
-  transition: background-color 0.3s;
+  font-size: 18px;
+  padding: 15px 40px;
+  transition: all 0.2s ease-in-out;
+  border: 2px solid rgb(206, 206, 206);
 }
 
 .post-btn:hover {
-  background-color: rgba(0, 123, 255, 1);
+  box-shadow: inset 2px 2px 5px #bcbcbc, inset -2px -2px 5px #ffffff, 2px 2px 5px #bcbcbc, -2px -2px 5px #ffffff;
+}
+
+.post-btn:focus {
+  outline: none;
+  box-shadow: inset 2px 2px 5px #bcbcbc, inset -2px -2px 5px #ffffff, 2px 2px 5px #bcbcbc, -2px -2px 5px #ffffff;
 }
 
 .post-icon {
@@ -215,12 +267,12 @@ main {
 
 .username {
   font-weight: bold;
-  color: white;
+  color: rgb(71, 71, 71);
 }
 
 .timestamp {
   font-size: 0.8em;
-  color: #ccc;
+  color: rgba(71, 71, 71, 0.658);
 }
 
 .review-actions {
@@ -230,12 +282,12 @@ main {
 .extend-icon {
   cursor: pointer;
   font-size: 1.5em;
-  color: #ccc;
+  color: rgb(71, 71, 71);
   transition: color 0.2s;
 }
 
 .extend-icon:hover {
-  color: white;
+  color: black;
 }
 
 .review-actions-menu {
