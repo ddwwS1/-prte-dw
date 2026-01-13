@@ -311,6 +311,25 @@ function attachPreviewListeners(container, userRef) {
   let activeCard = null;
   let hoverTimer = null;
 
+  const updatePreviewPosition = (card) => {
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const offset = 6;
+    const previewHeight = globalPreview.offsetHeight;
+    const previewWidth = globalPreview.offsetWidth;
+
+    const cardCenter = rect.left + rect.width / 2 + window.scrollX;
+    globalPreview.style.left = `${cardCenter - previewWidth / 2}px`;
+
+    const spaceBelow = window.innerHeight - rect.bottom;
+    if (spaceBelow < previewHeight + offset) {
+      globalPreview.style.top = `${rect.top + window.scrollY - previewHeight - offset}px`;
+    } else {
+      globalPreview.style.top = `${rect.bottom + window.scrollY + offset}px`;
+    }
+  };
+
+  
   const normalizeImages = (product, fallback) => {
     const raw =
       product?.images ??
@@ -330,6 +349,8 @@ function attachPreviewListeners(container, userRef) {
     }
     return [fallback];
   };
+
+  
 
   const showPreview = async (card) => {
     const rect = card.getBoundingClientRect();
@@ -356,6 +377,7 @@ function attachPreviewListeners(container, userRef) {
       console.error("Firestore fetch failed:", err);
     }
 
+    
     // Load product reviews for rating and count
     let averageRating = 0;
     let reviewCount = 0;
@@ -405,11 +427,21 @@ function attachPreviewListeners(container, userRef) {
       <a href="product.html?id=${productId}">View full page</a>
     `;
 
+     updatePreviewPosition(card);
+
+   const previewHeight = globalPreview.offsetHeight;
     const previewWidth = globalPreview.offsetWidth;
     const cardCenter = rect.left + rect.width / 2;
     globalPreview.style.left = cardCenter - previewWidth / 2 + "px";
-    globalPreview.style.top = rect.bottom + offset + "px";
 
+    const spaceBelow = window.innerHeight - rect.bottom;
+    if (spaceBelow < previewHeight + offset) {
+      // Not enough space below, show above
+      globalPreview.style.top = rect.top - previewHeight - offset + "px";
+    } else {
+      // Enough space below, show below
+      globalPreview.style.top = rect.bottom + offset + "px";
+    }
     const preImg = globalPreview.querySelector("#pre-img");
     const preImgTint = globalPreview.querySelector("#pre-img-tint");
 
@@ -525,7 +557,15 @@ if (wishBtn) {
     if (to && activeCard && activeCard.contains(to)) return;
     hidePreview();
   });
+
+  
+  window.addEventListener('scroll', () => {
+    if (activeCard) {
+      updatePreviewPosition(activeCard);
+    }
+  }, true);
 }
+
 /* ==================== Render products ==================== */
 async function renderGrid({ containerId, filterType, userRef }) {
   const grid = document.getElementById(containerId);
