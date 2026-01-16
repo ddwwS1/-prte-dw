@@ -16,6 +16,7 @@ firebase.onAuthStateChanged(firebase.auth, (user) => {
   } else {
     postSection.style.display = 'none';
   }
+  loadProductCard();
   loadReviews();
 });
 
@@ -86,6 +87,80 @@ async function postReview() {
   } catch (error) {
     console.error('Error posting review:', error);
     alert('Failed to post review. Please try again.');
+  }
+}
+
+async function loadProductCard() {
+  const container = document.getElementById('product-card');
+  if (!container) return;
+
+  try {
+    const productSnap = await firebase.getDoc(firebase.doc(firebase.db, 'products', productId));
+    if (!productSnap.exists()) {
+      container.innerHTML = '<p>Product not found.</p>';
+      return;
+    }
+    const product = productSnap.data();
+
+    // Fetch reviews for graph
+    const reviewsSnap = await firebase.getDocs(firebase.collection(firebase.db, 'products', productId, 'product-reviews'));
+    const reviews = [];
+    reviewsSnap.forEach(doc => reviews.push(doc.data()));
+
+    // Group by month
+    const monthlyRatings = {};
+    reviews.forEach(review => {
+      if (review.timestamp) {
+        const date = review.timestamp.toDate();
+        const month = date.toLocaleString('default', { month: 'short' });
+        if (!monthlyRatings[month]) monthlyRatings[month] = [];
+        monthlyRatings[month].push(review.stars);
+      }
+    });
+
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const graphData = months.map(month => {
+      const ratings = monthlyRatings[month] || [];
+      const avg = ratings.length ? (ratings.reduce((a,b)=>a+b,0) / ratings.length).toFixed(1) : 0;
+      return { month, avg: parseFloat(avg) };
+    });
+
+    const priceCents = Number(product.price) || 0;
+    const imgSrc = product.image || 'https://via.placeholder.com/200x200?text=No+Image';
+    const description = product.description || 'No description available.';
+    const sellerName = 'DWEH157'; // Assuming seller
+    const sellerLogo = '../images/brand_icons/ic_brand.svg'; // Assuming logo
+
+    container.innerHTML = `
+      <div class="product-overview-card">
+        <div class="product-image">
+          <img src="${imgSrc}" alt="${product.name}">
+        </div>
+        <div class="product-details">
+          <h2 class="product-name">${product.name || 'Unnamed Product'}</h2>
+          <p class="product-price">$${(priceCents / 100).toFixed(2)}</p>
+          <p class="product-description">${description}</p>
+          <div class="seller-info">
+            <img src="${sellerLogo}" alt="Seller Logo" class="seller-logo">
+            <span class="seller-name">${sellerName}</span>
+          </div>
+        </div>
+        <div class="ratings-graph">
+          <h3>Monthly Ratings</h3>
+          <div class="graph-container">
+            ${graphData.map(data => `
+              <div class="graph-bar" style="--height: ${data.avg * 20}px;">
+                <span class="bar-value">${data.avg}</span>
+                <span class="bar-label">${data.month}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      </div>
+    `;
+  } catch (error) {
+    container.innerHTML = '<p>Failed to load product.</p>';
+    console.error('Error loading product card:', error);
   }
 }
 

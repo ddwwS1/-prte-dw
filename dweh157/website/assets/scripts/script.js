@@ -217,6 +217,29 @@ function setCartBadge(count) {
   }
 }
 
+/* ==================== sticky menu bar ==================== */
+document.addEventListener('DOMContentLoaded', function() {
+  const menuBar = document.getElementById('menu_bar');
+  const menuBarInitialOffset = menuBar.offsetTop;
+  let isSticky = false;
+
+  function handleScroll() {
+    if (window.scrollY > menuBarInitialOffset) {
+      if (!isSticky) {
+        menuBar.classList.add('sticky-menu-bar');
+        isSticky = true;
+      }
+    } else {
+      if (isSticky) {
+        menuBar.classList.remove('sticky-menu-bar');
+        isSticky = false;
+      }
+    }
+  }
+
+  window.addEventListener('scroll', handleScroll);
+});
+
 /* ==================== Add to Cart ==================== */
 async function addToCart(userRef, productId) {
   if (!productId) {
@@ -267,12 +290,13 @@ async function addToWishs(userRef, productId) {
 }
 
 /* ==================== Remove from Wish ==================== */
-async function removeFromWishs(userRef, productId) {
+async function removeFromWishs(uid, productId) {
   if (!productId) {
     console.warn("Remove from Wish click without productId.");
     return;
   }
 
+  const userRef = firebase.doc(firebase.db, "users", uid);
   const wishCollectionRef = firebase.collection(userRef, "userWishs");
   const wishItemRef = firebase.doc(wishCollectionRef, productId);
 
@@ -282,6 +306,8 @@ async function removeFromWishs(userRef, productId) {
     if (snap.exists()) {
       await firebase.deleteDoc(wishItemRef);
       console.info("Product removed from wishlist.");
+      // Reload wishlist
+      loadWishlist(userRef);
     } else {
       console.info("Product not found in wishlist.");
     }
@@ -289,6 +315,41 @@ async function removeFromWishs(userRef, productId) {
     console.error("Failed to remove from wishlist:", err);
   }
 }
+
+/* ==================== cart/wish tabs ==================== */
+
+document.addEventListener('DOMContentLoaded', function() {
+  const cartIcon = document.getElementById('cart-icon');
+  const wishlistIcon = document.getElementById('wishlist-icon');
+  const cartItems = document.getElementById('cart-items');
+  let wishlistContainer = document.getElementById('wishlist-items');
+  if (!wishlistContainer) {
+    wishlistContainer = document.createElement('div');
+    wishlistContainer.id = 'wishlist-items';
+    wishlistContainer.style.display = 'none';
+    wishlistContainer.innerHTML = '<div style=\"color:#888;text-align:center;margin:20px;\">Wishlist is empty.</div>';
+    cartItems.parentNode.insertBefore(wishlistContainer, cartItems.nextSibling);
+  }
+
+  function showCart() {
+    cartItems.style.display = '';
+    wishlistContainer.style.display = 'none';
+    cartIcon.style.opacity = '1';
+    wishlistIcon.style.opacity = '0.5';
+    document.getElementById('cart-title').childNodes[0].textContent = 'Your Cart';
+  }
+  function showWishlist() {
+    cartItems.style.display = 'none';
+    wishlistContainer.style.display = '';
+    cartIcon.style.opacity = '0.5';
+    wishlistIcon.style.opacity = '1';
+    document.getElementById('cart-title').childNodes[0].textContent = 'Wishlist';
+    loadWishlist(userRef);
+  }
+
+  cartIcon.addEventListener('click', showCart);
+  wishlistIcon.addEventListener('click', showWishlist);
+});
 
 /* ==================== Badge update ==================== */
 async function updateCartBadge(userRef) {
@@ -460,7 +521,7 @@ function attachPreviewListeners(container, userRef) {
             preImg.src = newSrc;
             preImg.style.opacity = '1';
           };
-          tempImg.src = newSrc;
+tempImg.src = newSrc;
         }, 150);
       });
     }
@@ -491,7 +552,7 @@ if (wishBtn) {
     wishBtn.addEventListener("click", async (e) => {
       e.stopPropagation();
       if (snap.exists()) {
-        await removeFromWishs(userRef, productId);
+        await removeFromWishs(userRef.id, productId);
         wishBtn.textContent = "wishlist";
         wishBtn.style.color = ""; // reset
         wishBtn.style.fontSize = "15px"
@@ -747,6 +808,11 @@ async function loadCart() {
 
   for (const cartDoc of cartSnapshot.docs) {
     const { productId, quantity } = cartDoc.data();
+    if (!productId) {
+      console.warn("Removing cart item with undefined productId");
+      await firebase.deleteDoc(cartDoc.ref);
+      continue;
+    }
     try {
       const productSnap = await firebase.getDoc(
         firebase.doc(firebase.db, "products", productId)
@@ -858,3 +924,52 @@ async function checkHeadline() {
 }
 
 checkHeadline();
+/* ==================== Load Wishlist ==================== */
+
+async function loadWishlist(userRef) {
+  const uid = userRef.id;
+  const wishlistContainer = document.getElementById('wishlist-items');
+  if (!wishlistContainer) return;
+
+  wishlistContainer.innerHTML = '<div style="color:#888;text-align:center;margin:20px;">Loading wishlist...</div>';
+
+  try {
+    const wishSnap = await firebase.getDocs(firebase.collection(firebase.db, `users/${uid}/userWishs`));
+    if (wishSnap.empty) {
+      wishlistContainer.innerHTML = '<div style="color:#888;text-align:center;margin:20px;">Wishlist is empty.</div>';
+      return;
+    }
+
+    wishlistContainer.innerHTML = '';
+    for (const docSnap of wishSnap.docs) {
+      const productId = docSnap.id;
+      try {
+        const productSnap = await firebase.getDoc(firebase.doc(firebase.db, "products", productId));
+        if (productSnap.exists()) {
+          const product = productSnap.data();
+          const priceCents = Number(product.price) || 0;
+          const imgSrc = product.image || "https://via.placeholder.com/60x60?text=No+Image";
+
+          const itemDiv = document.createElement('div');
+          itemDiv.className = 'wishlist-item';
+          itemDiv.innerHTML = `
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 0;">
+              <img src="${imgSrc}" alt="${product.name}" style="width:60px;height:60px;border-radius:12px;object-fit:cover;">
+              <div>
+                <div style="font-weight:bold;">${product.name || 'Unnamed Product'}</div>
+                <div style="font-size:13px;color:#888;">$${ (priceCents / 100).toFixed(2) }</div>
+              </div>
+              <button style="margin-left:auto;padding:6px 12px;border-radius:8px;background:#eee;border:none;cursor:pointer;" onclick="removeFromWishs('${uid}', '${productId}')">Remove</button>
+            </div>
+          `;
+          wishlistContainer.appendChild(itemDiv);
+        }
+      } catch (err) {
+        console.error("Failed to load product", productId, err);
+      }
+    }
+  } catch (err) {
+    wishlistContainer.innerHTML = '<div style="color:red;text-align:center;margin:20px;">Failed to load wishlist.</div>';
+    console.error('Failed to load wishlist:', err);
+  }
+}
