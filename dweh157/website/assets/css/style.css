@@ -701,7 +701,7 @@ transform: scale(1.05);
   border-radius: 10px;
   overflow: hidden;
 }
-/* === Neumorphic Footer Styles Added by AI === */
+
 .footer-neumorphic {
   padding: 40px 20px;
   background: #e0e0e0;
@@ -752,8 +752,6 @@ transform: scale(1.05);
     inset -5px -5px 10px #ffffff,
     inset 5px 5px 10px #bebebe;
 }
-/* === End Neumorphic Footer Styles Added by AI === */
-
 
 .cart-item-info img {
   width: 100%;
