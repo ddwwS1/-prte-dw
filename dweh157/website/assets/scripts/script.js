@@ -439,6 +439,20 @@ function attachPreviewListeners(container, userRef) {
     }
 
     
+    // Fetch seller name
+    let sellerName = "Unknown";
+    if (product?.sellerID) {
+      try {
+        const sellerSnap = await firebase.getDoc(firebase.doc(firebase.db, "users", product.sellerID));
+        if (sellerSnap.exists()) {
+          sellerName = sellerSnap.data().name || "Unknown";
+        }
+      } catch (err) {
+        console.error("Failed to fetch seller:", err);
+      }
+    }
+
+    
     // Load product reviews for rating and count
     let averageRating = 0;
     let reviewCount = 0;
@@ -463,7 +477,7 @@ function attachPreviewListeners(container, userRef) {
     globalPreview.innerHTML = `
       <div id="pre-title-holder"> 
         <h4 id="pre-title">Quick Preview</h4>
-        <h4 id="pre-seller-txt">seller: ${product?.seller || "Unknown"}</h4> 
+        <h4 id="pre-seller-txt">seller: ${sellerName}</h4> 
       </div>
       <div id="pre-img-holder">
         <img id="pre-img" src="${images[0]}" alt="${name}">

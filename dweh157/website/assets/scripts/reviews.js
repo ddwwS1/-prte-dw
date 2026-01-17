@@ -94,6 +94,8 @@ async function loadProductCard() {
   const container = document.getElementById('product-card');
   if (!container) return;
 
+  let imgSrc; // Declare imgSrc at function scope
+
   try {
     const productSnap = await firebase.getDoc(firebase.doc(firebase.db, 'products', productId));
     if (!productSnap.exists()) {
@@ -101,6 +103,22 @@ async function loadProductCard() {
       return;
     }
     const product = productSnap.data();
+
+    // Fetch seller name
+    let sellerName = "Unknown";
+    let sellerImage = "../images/brand_icons/ic_google_brand.png"; // Default logo
+    if (product?.sellerID) {
+      try {
+        const sellerSnap = await firebase.getDoc(firebase.doc(firebase.db, "users", product.sellerID));
+        if (sellerSnap.exists()) {
+          const sellerData = sellerSnap.data();
+          sellerName = sellerData.name || "Unknown";
+          sellerImage = sellerData.image || "../images/brand_icons/ic_google_brand.png";
+        }
+      } catch (err) {
+        console.error("Failed to fetch seller:", err);
+      }
+    }
 
     // Fetch reviews for graph
     const reviewsSnap = await firebase.getDocs(firebase.collection(firebase.db, 'products', productId, 'product-reviews'));
@@ -126,10 +144,14 @@ async function loadProductCard() {
     });
 
     const priceCents = Number(product.price) || 0;
-    const imgSrc = product.image || 'https://via.placeholder.com/200x200?text=No+Image';
+    let imgSrc = product.image;
+    if (imgSrc && imgSrc.includes('github.com') && imgSrc.includes('products-img')) {
+      const filename = imgSrc.split('/').pop().split('?')[0];
+      imgSrc = '../images/products-img/' + filename;
+    } else if (!imgSrc) {
+      imgSrc = 'https://via.placeholder.com/200x200?text=No+Image';
+    }
     const description = product.description || 'No description available.';
-    const sellerName = 'DWEH157'; // Assuming seller
-    const sellerLogo = '../images/brand_icons/ic_brand.svg'; // Assuming logo
 
     container.innerHTML = `
       <div class="product-overview-card">
@@ -141,7 +163,7 @@ async function loadProductCard() {
           <p class="product-price">$${(priceCents / 100).toFixed(2)}</p>
           <p class="product-description">${description}</p>
           <div class="seller-info">
-            <img src="${sellerLogo}" alt="Seller Logo" class="seller-logo">
+            <img src="${sellerImage}" alt="Seller Logo" class="seller-logo">
             <span class="seller-name">${sellerName}</span>
           </div>
         </div>
@@ -161,6 +183,53 @@ async function loadProductCard() {
   } catch (error) {
     container.innerHTML = '<p>Failed to load product.</p>';
     console.error('Error loading product card:', error);
+  }
+
+  // Load and display product image with dynamic outline
+  const productImg = container.querySelector('.product-image img');
+  if (productImg) {
+    console.log("Setting product img src to:", imgSrc);
+    
+    // Function to apply outline based on image average color
+    const applyOutline = () => {
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = productImg.naturalWidth;
+      canvas.height = productImg.naturalHeight;
+      try {
+        ctx.drawImage(productImg, 0, 0);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const imgData = imageData.data; // RGBA pixel data
+        let r = 0, g = 0, b = 0, count = 0;
+        // Sum RGB values from all pixels
+        for (let i = 0; i < imgData.length; i += 4) {
+          r += imgData[i];     // Red
+          g += imgData[i + 1]; // Green
+          b += imgData[i + 2]; // Blue
+          count++;
+        }
+        // Calculate average color
+        r = Math.floor(r / count);
+        g = Math.floor(g / count);
+        b = Math.floor(b / count);
+        console.log(`Product outline color: rgb(${r}, ${g}, ${b})`);
+        // Apply semi-transparent outline using average color
+        productImg.style.boxShadow = `0 0 20px 3px rgba(${r}, ${g}, ${b}, 0.7)`;
+        productImg.style.transition = 'box-shadow 0.3s ease';
+      } catch (e) {
+        console.log('Error extracting color, using default outline');
+        // Fallback to semi-transparent black outline
+        productImg.style.boxShadow = '0 0 20px 3px rgba(0, 0, 0, 0.7)';
+        productImg.style.transition = 'box-shadow 0.3s ease';
+      }
+    };
+
+    // Apply outline immediately if already loaded
+    if (productImg.complete) {
+      applyOutline();
+    } else {
+      productImg.onload = applyOutline;
+    }
   }
 }
 
