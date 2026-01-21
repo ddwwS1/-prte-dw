@@ -1,124 +1,311 @@
-<!doctype html>
-<html>
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-
-  <html lang="en">
-
-  <meta charset="utf-8">
-
-  <title>my account</title>
-  <link rel="shortcut icon"
-    href="https://github.com/ddwwS1/-prte-dw/blob/main/store-project/UI/icons/brand/play-alt.png?raw=true"
-    type="image/x-icon">
-
-
-  <meta name="theme-color" content="#404040">
-  <meta name="apple-mobile-web-app-status-bar-style" content="#404040">
-
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - DWEH157</title>
   <link rel="stylesheet" href="../css/myaccount-style.css">
   <!-- Firebase SDK from CDN -->
   <script type="module" src="../scripts/firebase.js"></script>
   <script type="module" src="../scripts/auth.js"  ></script>
-
 </head>
-
 <body>
-  <div class="main-layout">
-    <video autoplay muted loop id="bg-video">
-      <source src="../videos/bg/5043691-uhd_3840_2160_30fps.mp4" type="video/mp4">
-    </video>
-
-    <div class="glassfilter">
-
-      <div id="book">
-        <div class="pages" id="page-1">
-
-
-          <div id="profile-pic-holder">
-            <div id="profile-pic">
-            </div>
-          </div>
-          <h1 id="username">Guest</h1>
-
-
-          <div id="INFO-section">
-
-            <div id="mi-button">
-              <img id="mi-icon" src="">
-              <h2 id="mi-txt">fill out you missing data</h2>
-            </div>
-
-            <div id="email-txt-div">
-              <h2 id="email-txt">Gmail : none</h2>
-            </div>
-
-            <div id="phonenum-txt-div">
-              <h2 id="phonenum-txt">pohone number : none</h2>
-            </div>
-
-            <div id="address-txt-div">
-              <h2 id="address-txt">address : none</h2>
-            </div>
-
-          </div>
-
-        </div>
-
-        <div class="pages" id="page-2">
-        </div>
-
-        <div class="pages" id="page-3">
-        </div>
-
-        <div class="pages" id="page-4">
-        </div>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="header-title">My Account</h1>
+            <p class="header-subtitle">Manage your account details and preferences</p>
+        </header>
         
-
-
-      </div>
-
-
-
-
-      <div id="side-menu">
-
-        <div id="sgn-w-google-btn">
-          <div id="google-icon"></div>
-          <h2 id="sgn-w-google-txt">Sign in with Google</h2>
+        <!-- Main Content -->
+        <div class="main-grid">
+            <!-- Left Column - Profile & Settings -->
+            <div class="left-column">
+                <!-- Profile Section -->
+                <div class="card profile-card">
+                    <h2 class="card-title">Profile Information</h2>
+                    
+                    <div class="profile-header">
+                        <div class="avatar-container">
+                            <img src="../images/icons/ic_user_gray.svg" alt="Sarah Anderson" class="avatar-image">
+                        </div>
+                        
+                        <div class="profile-info">
+                            <h3 class="profile-name">unknown</h3>
+                            <p class="profile-member">Member since (date non-available)</p>
+                        </div>
+                        
+                        <button class="btn-neumorphic">Edit Profile</button>
+                    </div>
+                    
+                    <!-- Contact Details -->
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope icon"></i>
+                            <span>email@example.com</span>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-phone icon"></i>
+                            <span>no phone number available</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Account Settings -->
+                <div class="card settings-card">
+                    <h2 class="card-title">Account Settings</h2>
+                    
+                    <div class="settings-list">
+                        <button class="setting-item">
+                            <div class="setting-icon-box">
+                                <i class="fas fa-bell"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3 class="setting-label">Notifications</h3>
+                                <p class="setting-description">Manage email and push notifications</p>
+                            </div>
+                            <div class="setting-arrow">→</div>
+                        </button>
+                        
+                        <button class="setting-item">
+                            <div class="setting-icon-box">
+                                <i class="fas fa-lock"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3 class="setting-label">Password & Security</h3>
+                                <p class="setting-description">Change password and security settings</p>
+                            </div>
+                            <div class="setting-arrow">→</div>
+                        </button>
+                        
+                        <button class="setting-item">
+                            <div class="setting-icon-box">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3 class="setting-label">Language & Region</h3>
+                                <p class="setting-description">Set your language and region preferences</p>
+                            </div>
+                            <div class="setting-arrow">→</div>
+                        </button>
+                        
+                        <button class="setting-item">
+                            <div class="setting-icon-box">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3 class="setting-label">Privacy</h3>
+                                <p class="setting-description">Control your privacy settings</p>
+                            </div>
+                            <div class="setting-arrow">→</div>
+                        </button>
+                        
+                        <button class="setting-item">
+                            <div class="setting-icon-box">
+                                <i class="fas fa-shield-alt"></i>
+                            </div>
+                            <div class="setting-content">
+                                <h3 class="setting-label">Two-Factor Authentication</h3>
+                                <p class="setting-description">Add an extra layer of security</p>
+                            </div>
+                            <div class="setting-arrow">→</div>
+                        </button>
+                    </div>
+                    
+                    <div class="sign-out-section">
+                        <button class="btn-sign-out">Sign Out</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Right Column - Orders, Addresses, Payments -->
+            <div class="right-column">
+                <!-- Order History -->
+                <div class="card orders-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Order History</h2>
+                        <button class="view-all-link">View All</button>
+                    </div>
+                    
+                    <div class="orders-list">
+                        <div class="order-item">
+                            <div class="order-icon-box">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="order-content">
+                                <div class="order-header">
+                                    <span class="order-id">Order #10234</span>
+                                    <span class="order-total">$129.99</span>
+                                </div>
+                                <div class="order-footer">
+                                    <span class="order-meta">Jan 15, 2026 • 3 items</span>
+                                    <span class="order-status status-delivered">Delivered</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right order-chevron"></i>
+                        </div>
+                        
+                        <div class="order-item">
+                            <div class="order-icon-box">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="order-content">
+                                <div class="order-header">
+                                    <span class="order-id">Order #10233</span>
+                                    <span class="order-total">$79.50</span>
+                                </div>
+                                <div class="order-footer">
+                                    <span class="order-meta">Jan 12, 2026 • 2 items</span>
+                                    <span class="order-status status-processing">Processing</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right order-chevron"></i>
+                        </div>
+                        
+                        <div class="order-item">
+                            <div class="order-icon-box">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="order-content">
+                                <div class="order-header">
+                                    <span class="order-id">Order #10232</span>
+                                    <span class="order-total">$245.00</span>
+                                </div>
+                                <div class="order-footer">
+                                    <span class="order-meta">Jan 08, 2026 • 5 items</span>
+                                    <span class="order-status status-shipped">Shipped</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right order-chevron"></i>
+                        </div>
+                        
+                        <div class="order-item">
+                            <div class="order-icon-box">
+                                <i class="fas fa-box"></i>
+                            </div>
+                            <div class="order-content">
+                                <div class="order-header">
+                                    <span class="order-id">Order #10231</span>
+                                    <span class="order-total">$56.25</span>
+                                </div>
+                                <div class="order-footer">
+                                    <span class="order-meta">Jan 03, 2026 • 1 items</span>
+                                    <span class="order-status status-delivered">Delivered</span>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right order-chevron"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Saved Addresses -->
+                <div class="card addresses-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Saved Addresses</h2>
+                        <button class="icon-btn-neumorphic">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="addresses-grid">
+                        <div class="address-item">
+                            <div class="default-badge">Default</div>
+                            <div class="address-header">
+                                <div class="address-icon-box">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div>
+                                    <h3 class="address-type">Home</h3>
+                                    <p class="address-name">Sarah Anderson</p>
+                                </div>
+                            </div>
+                            <div class="address-details">
+                                <p>123 Main Street, Apt 4B</p>
+                                <p>San Francisco, CA 94102</p>
+                            </div>
+                            <div class="address-actions">
+                                <button class="btn-action">Edit</button>
+                                <button class="btn-action">Remove</button>
+                            </div>
+                        </div>
+                        
+                        <div class="address-item">
+                            <div class="address-header">
+                                <div class="address-icon-box">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                </div>
+                                <div>
+                                    <h3 class="address-type">Work</h3>
+                                    <p class="address-name">Sarah Anderson</p>
+                                </div>
+                            </div>
+                            <div class="address-details">
+                                <p>456 Market Street, Suite 200</p>
+                                <p>San Francisco, CA 94105</p>
+                            </div>
+                            <div class="address-actions">
+                                <button class="btn-action">Edit</button>
+                                <button class="btn-action">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Payment Methods -->
+                <div class="card payment-card">
+                    <div class="card-header">
+                        <h2 class="card-title">Payment Methods</h2>
+                        <button class="icon-btn-neumorphic">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="payment-list">
+                        <div class="payment-item">
+                            <div class="default-badge">Default</div>
+                            <div class="payment-content">
+                                <div class="payment-icon-box">
+                                    <i class="fas fa-credit-card"></i>
+                                </div>
+                                <div class="payment-info">
+                                    <h3 class="payment-brand">Visa Credit</h3>
+                                    <p class="payment-number">•••• •••• •••• 4242</p>
+                                </div>
+                                <div class="payment-expiry">
+                                    <p class="expiry-label">Expires</p>
+                                    <p class="expiry-date">12/26</p>
+                                </div>
+                            </div>
+                            <div class="payment-actions">
+                                <button class="btn-action">Edit</button>
+                                <button class="btn-action">Remove</button>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-item">
+                            <div class="payment-content">
+                                <div class="payment-icon-box">
+                                    <i class="fas fa-credit-card"></i>
+                                </div>
+                                <div class="payment-info">
+                                    <h3 class="payment-brand">Mastercard Debit</h3>
+                                    <p class="payment-number">•••• •••• •••• 8888</p>
+                                </div>
+                                <div class="payment-expiry">
+                                    <p class="expiry-label">Expires</p>
+                                    <p class="expiry-date">09/27</p>
+                                </div>
+                            </div>
+                            <div class="payment-actions">
+                                <button class="btn-action">Edit</button>
+                                <button class="btn-action">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <div class="side-btn" id="my-info-btn">
-          <h2 id="my-info-txt">my information</h2>
-        </div>
-         
-        <div class="side-btn" id="my-address-btn">
-          <h2 id="my-address-txt">my address</h2>
-        </div>
-
-        <div class="side-btn" id="payment-methods-btn">
-          <h2 id="payment-methods-txt">payment method and balance</h2>
-          </div>
-
-        <div class="side-btn" id="order-history-btn">
-          <h2 id="order-history-txt">order history</h2>
-        </div>
-
-        <div class="side-btn" id="sign-out-btn">
-          <h2 id="sign-out-txt">sign out</h2>
-        </div>
-
-
-
-      </div>
-
-
-
-
     </div>
-  </div>
 </body>
-
 </html>
