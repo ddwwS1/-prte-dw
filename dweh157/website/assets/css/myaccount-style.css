@@ -13,7 +13,7 @@
 
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-    background-color: #e0e5ec;
+  background: #e0e0e0;/* Light shadow */
     color: rgb(71, 71, 71);
     line-height: 1.6;
     min-height: 100vh;
@@ -65,10 +65,12 @@ body {
 
 /* Card Styles - Neumorphic Effect */
 .card {
-    background: #e0e5ec;
+  background: #e0e0e0;
+  box-shadow: 
+    8px 8px 16px #bebebe,   /* Dark shadow */
+    -8px -8px 16px #ffffff; /* Light shadow */
     border-radius: 50px;
     padding: 2rem;
-    box-shadow: 8px 8px 16px #b8bcc4, -8px -8px 16px #ffffff;
 }
 
 .card-title {
@@ -107,8 +109,8 @@ body {
     width: 96px;
     height: 96px;
     border-radius: 50%;
-    background: #e0e5ec;
-    box-shadow: inset 6px 6px 12px #b8bcc4, inset -6px -6px 12px #ffffff;
+    background: #e0e0e0;
+    box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -149,9 +151,9 @@ body {
 .btn-neumorphic {
     padding: 0.75rem 1.5rem;
     border-radius: 15px;
-    background: #e0e5ec;
     border: none;
-    box-shadow: 4px 4px 8px #b8bcc4, -4px -4px 8px #ffffff;
+    background: #e0e0e0;
+    box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
     color: rgb(71, 71, 71);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -171,9 +173,9 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 12px;
-    background: #e0e5ec;
     border: none;
-    box-shadow: 4px 4px 8px #b8bcc4, -4px -4px 8px #ffffff;
+    background: #e0e0e0;
+    box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
     color: rgb(71, 71, 71);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -190,9 +192,9 @@ body {
     flex: 1;
     padding: 0.5rem 1rem;
     border-radius: 12px;
-    background: #e0e5ec;
     border: none;
-    box-shadow: 4px 4px 8px #b8bcc4, -4px -4px 8px #ffffff;
+    background: #e0e0e0;
+    box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
     color: rgb(71, 71, 71);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -200,7 +202,7 @@ body {
 }
 
 .btn-action:hover {
-    box-shadow: inset 3px 3px 6px #b8bcc4, inset -3px -3px 6px #ffffff;
+    box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
 }
 
 /* Contact Details */
@@ -216,8 +218,8 @@ body {
     gap: 1rem;
     padding: 1rem;
     border-radius: 25px;
-    background: #e0e5ec;
-    box-shadow: inset 3px 3px 6px #b8bcc4, inset -3px -3px 6px #ffffff;
+    background: #e0e0e0;
+    box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
     color: rgb(71, 71, 71);
 }
 
@@ -237,9 +239,9 @@ body {
     width: 100%;
     padding: 1.25rem;
     border-radius: 35px;
-    background: #e0e5ec;
     border: none;
-    box-shadow: 6px 6px 12px #b8bcc4, -6px -6px 12px #ffffff;
+    background: #e0e0e0;
+    box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -260,8 +262,8 @@ body {
     width: 48px;
     height: 48px;
     border-radius: 18px;
-    background: #e0e5ec;
-    box-shadow: inset 3px 3px 6px #b8bcc4, inset -3px -3px 6px #ffffff;
+    background: #e0e0e0;
+    box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -288,8 +290,8 @@ body {
     width: 32px;
     height: 32px;
     border-radius: 13px;
-    background: #e0e5ec;
-    box-shadow: 3px 3px 6px #b8bcc4, -3px -3px 6px #ffffff;
+    background: #e0e0e0;
+    box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -308,9 +310,9 @@ body {
     width: 100%;
     padding: 0.75rem 1.5rem;
     border-radius: 35px;
-    background: #e0e5ec;
     border: none;
-    box-shadow: 4px 4px 8px #b8bcc4, -4px -4px 8px #ffffff;
+     background: #e0e0e0;
+    box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
     color: #e53e3e;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -318,7 +320,7 @@ body {
 }
 
 .btn-sign-out:hover {
-    box-shadow: inset 4px 4px 8px #b8bcc4, inset -4px -4px 8px #ffffff;
+    box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
 }
 
 /* View All Link */
@@ -345,8 +347,8 @@ body {
 .order-item {
     padding: 1.25rem;
     border-radius: 35px;
-    background: #e0e5ec;
-    box-shadow: 6px 6px 12px #b8bcc4, -6px -6px 12px #ffffff;
+    background: #e0e0e0;
+    box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -355,7 +357,7 @@ body {
 }
 
 .order-item:hover {
-    box-shadow: inset 3px 3px 6px #b8bcc4, inset -3px -3px 6px #ffffff;
+    box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
 }
 
 .order-item:hover .order-chevron {
@@ -366,8 +368,8 @@ body {
     width: 48px;
     height: 48px;
     border-radius: 18px;
-    background: #e0e5ec;
-    box-shadow: inset 3px 3px 6px #b8bcc4, inset -3px -3px 6px #ffffff;
+    background: #e0e0e0;
+    box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -444,8 +446,8 @@ body {
 .address-item {
     padding: 1.25rem;
     border-radius: 35px;
-    background: #e0e5ec;
-    box-shadow: 6px 6px 12px #b8bcc4, -6px -6px 12px #ffffff;
+    background: #e0e0e0;
+    box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;;
     position: relative;
 }
 
@@ -455,8 +457,8 @@ body {
     right: 0.75rem;
     padding: 0.25rem 0.75rem;
     border-radius: 10px;
-    background: #e0e5ec;
-    box-shadow: inset 2px 2px 4px #b8bcc4, inset -2px -2px 4px #ffffff;
+    background: #e0e0e0;
+    box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
     font-size: 0.75rem;
     color: rgb(71, 71, 71);
 }
@@ -472,8 +474,8 @@ body {
     width: 40px;
     height: 40px;
     border-radius: 15px;
-    background: #e0e5ec;
-    box-shadow: inset 3px 3px 6px #b8bcc4, inset -3px -3px 6px #ffffff;
+    background: #e0e0e0;
+    box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -518,8 +520,8 @@ body {
 .payment-item {
     padding: 1.25rem;
     border-radius: 35px;
-    background: #e0e5ec;
-    box-shadow: 6px 6px 12px #b8bcc4, -6px -6px 12px #ffffff;
+    background: #e0e0e0;
+    box-shadow: 6px 6px 12px #bebebe, -6px -6px 12px #ffffff;
     position: relative;
 }
 
@@ -534,8 +536,8 @@ body {
     width: 48px;
     height: 48px;
     border-radius: 18px;
-    background: #e0e5ec;
-    box-shadow: inset 3px 3px 6px #b8bcc4, inset -3px -3px 6px #ffffff;
+    background: #e0e0e0;
+    box-shadow: inset 6px 6px 12px #bebebe, inset -6px -6px 12px #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
