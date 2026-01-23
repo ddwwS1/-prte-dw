@@ -828,7 +828,7 @@ enableHorizontalScroll("product-grid");
 enableHorizontalScroll("product-grid2");
 
 // ==================== Cart toggle ====================
-const shCard = document.getElementById("sh-card");
+const shCard = document.getElementById("sh-card-container");
 const cart = document.getElementById("cart");
 const overlay = document.getElementById("overlay");
 const closeBtn = document.getElementById("close-cart");
