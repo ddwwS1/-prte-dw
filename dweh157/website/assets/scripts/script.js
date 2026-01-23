@@ -220,24 +220,52 @@ function setCartBadge(count) {
 /* ==================== sticky menu bar ==================== */
 document.addEventListener('DOMContentLoaded', function() {
   const menuBar = document.getElementById('menu_bar');
+  const offScreenMenu = document.querySelector('.off-screen-menu');
   const menuBarInitialOffset = menuBar.offsetTop;
   let isSticky = false;
+
+  function adjustOffScreenMenuForSticky() {
+    if (offScreenMenu) {
+      const isMobile = window.innerWidth <= 500;
+      const stickyHeight = isMobile ? 60 : 70;
+      offScreenMenu.style.top = stickyHeight + 'px';
+      offScreenMenu.style.height = `calc(100vh - ${stickyHeight}px)`;
+      offScreenMenu.style.zIndex = '1000';
+    }
+  }
+
+  function resetOffScreenMenu() {
+    if (offScreenMenu) {
+      offScreenMenu.style.top = '0';
+      offScreenMenu.style.height = '100vh';
+      offScreenMenu.style.zIndex = '10';
+    }
+  }
 
   function handleScroll() {
     if (window.scrollY > menuBarInitialOffset) {
       if (!isSticky) {
         menuBar.classList.add('sticky-menu-bar');
+        adjustOffScreenMenuForSticky();
         isSticky = true;
       }
     } else {
       if (isSticky) {
         menuBar.classList.remove('sticky-menu-bar');
+        resetOffScreenMenu();
         isSticky = false;
       }
     }
   }
 
   window.addEventListener('scroll', handleScroll);
+  
+  // Also adjust on window resize in case of mobile/desktop switch
+  window.addEventListener('resize', function() {
+    if (isSticky) {
+      adjustOffScreenMenuForSticky();
+    }
+  });
 });
 
 /* ==================== Add to Cart ==================== */
@@ -650,11 +678,19 @@ async function renderGrid({ containerId, filterType, userRef }) {
   }
   grid.innerHTML = "";
 
+  // Create placeholder cards while loading
+  createPlaceholders(grid, 6); // Show 6 placeholder cards
+  grid.classList.add("placeholder-state");
+
   const q = firebase.query(
     firebase.collection(firebase.db, "products"),
     firebase.where("type", "==", filterType)
   );
   const snapshot = await firebase.getDocs(q);
+
+  // Clear placeholders and remove placeholder state
+  grid.innerHTML = "";
+  grid.classList.remove("placeholder-state");
 
   snapshot.forEach((docSnap) => {
     const { name, price, image } = docSnap.data();
@@ -696,7 +732,31 @@ async function renderGrid({ containerId, filterType, userRef }) {
   attachPreviewListeners(grid, userRef);
 }
 
+/* ==================== Placeholder Cards ==================== */
+function createPlaceholders(grid, count) {
+  for (let i = 0; i < count; i++) {
+    const placeholderCard = document.createElement("div");
+    placeholderCard.classList.add("tap-sensor");
 
+    placeholderCard.innerHTML = `
+      <div class="pr-card placeholder">
+        <div class="price-box">
+          <p class="price-number">Loading...</p>
+        </div>
+        <div class="pr-img-holder"></div>
+        <img class="pr-img" src="" alt="Loading..." loading="lazy">
+        <p class="pr-name">Loading product...</p>
+        <div class="add-tint">
+          <div class="add-to-cart">
+            <img class="add-cart-img" src="../images/icons/ic_plus_white.svg" alt="Add to cart">
+          </div>
+        </div>
+      </div>
+    `;
+
+    grid.appendChild(placeholderCard);
+  }
+}
 
 /* ==================== Delegated cart clicks ==================== */
 function wireCartClicks(userRef) {

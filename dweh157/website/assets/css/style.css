@@ -100,7 +100,7 @@
   box-shadow: 0px 20px 30px rgb(0, 0, 0);
   display: flex;
   flex-direction: column;
-  transition: right 0.3s ease;
+  transition: right 0.3s ease, top 0.3s ease, height 0.3s ease, z-index 0.3s ease;
   z-index: 10;
 }
 .off-screen-menu:hover{
@@ -231,7 +231,7 @@ input { accent-color: rgb(64,64,64); }
 body {
   height: 100vh;
   width: 100vw;
-  position: relative;
+  position: absolute;
   background-color: rgb(64,64,64);
   overflow-x: hidden;
 }
@@ -421,8 +421,6 @@ cursor: pointer;
 .main-grid {
   display: grid;
   border-radius: 50px;
-
-
   margin: 20px;
   grid-auto-flow: column;
   grid-auto-columns: 350px;
@@ -433,6 +431,7 @@ cursor: pointer;
   scrollbar-width: none;
   -ms-overflow-style: none;
   overscroll-behavior: contain; /* avoid parent stealing scroll */
+  transition: all 0.5s ease;
 }
 
 .main-grid::-webkit-scrollbar { display: none; }
@@ -544,6 +543,64 @@ cursor: pointer;
   filter: blur(5px) brightness(1.1);
 }
 
+/* Placeholder cards */
+.pr-card.placeholder {
+  background: linear-gradient(90deg, rgba(255,255,255,0.1) 25%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0.1) 75%);
+  background-size: 200% 100%;
+  animation: loading 1.5s infinite;
+  transition: all 0.5s ease;
+}
+
+.pr-card:not(.placeholder) {
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.pr-card.placeholder .pr-img {
+  background: rgba(255,255,255,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.5);
+  font-size: 18px;
+}
+
+.pr-card.placeholder .pr-name,
+.pr-card.placeholder .price-number {
+  background: rgba(255,255,255,0.2);
+  color: transparent;
+  border-radius: 10px;
+}
+
+/* Grid states */
+.main-grid.placeholder-state {
+  /* Keep grid layout but add loading state */
+  opacity: 0.8;
+}
+
+.main-grid.loaded-state {
+  /* Inherits from .main-grid */
+}
+
 /* ====== Responsive ====== */
 /* mobile responsive */
 @media (max-width: 768px) {
@@ -551,6 +608,10 @@ cursor: pointer;
     grid-auto-columns: minmax(85vw, 1fr);
     padding: 15px;
     gap: 10px;
+  }
+
+  .main-grid.placeholder-state {
+    /* Keep responsive grid layout */
   }
 
   .pr-card {
