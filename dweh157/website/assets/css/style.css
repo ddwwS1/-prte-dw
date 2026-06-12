@@ -269,7 +269,7 @@ body {
   position: relative;
   display: flex;
   align-items: center;
-
+  z-index: 10;
 }
 
 .icon {
@@ -1010,7 +1010,7 @@ transform: scale(1.05);
 
 #global-preview {
   position: fixed; /* or absolute if you prefer within a positioned ancestor */
-  z-index: 999;
+  z-index: 9;
   pointer-events: auto; /* important: allow hover */
   border-radius: 50px;
 }
